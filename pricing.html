@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProjX Pricing Intelligence | Woodchester Estate</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'Inter', -apple-system, sans-serif; 
+    background: #0a0e1a; 
+    color: #e0e0e0; 
+    overflow-x: hidden;
+  }
+  
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(0, 100, 255, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0, 200, 150, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(100, 0, 255, 0.04) 0%, transparent 50%);
+    z-index: -1;
+  }
+  
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+  
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #00d4ff;
+  }
+  .project-name {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    margin-top: 4px;
+  }
+  .project-sub {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .header-right .date {
+    font-size: 12px;
+    color: #666;
+  }
+  .header-right .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    margin-top: 8px;
+  }
+  
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .kpi-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .kpi-card:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.05);
+    transform: translateY(-2px);
+  }
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .kpi-value.green { color: #00e68a; }
+  .kpi-value.blue { color: #00d4ff; }
+  .kpi-value.orange { color: #ff9f43; }
+  .kpi-value.purple { color: #b388ff; }
+  .kpi-label {
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+  
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  /* Chart containers */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .chart-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .chart-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ccc;
+    margin-bottom: 16px;
+  }
+  .chart-card canvas {
+    width: 100% !important;
+    height: 300px !important;
+  }
+  
+  /* Recommendation box */
+  .rec-box {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 230, 138, 0.06));
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 24px 0;
+  }
+  .rec-box h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #00d4ff;
+    margin-bottom: 12px;
+  }
+  .rec-row {
+    display: flex;
+    gap: 40px;
+    margin-top: 16px;
+  }
+  .rec-item {
+    text-align: center;
+  }
+  .rec-item .val {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .rec-item .lab {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  
+  /* Backtest */
+  .backtest {
+    background: rgba(0, 230, 138, 0.05);
+    border: 1px solid rgba(0, 230, 138, 0.15);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .backtest h3 {
+    color: #00e68a;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .backtest p {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.6;
+  }
+  .accuracy {
+    font-size: 48px;
+    font-weight: 900;
+    color: #00e68a;
+    display: inline-block;
+    margin: 8px 0;
+  }
+  
+  /* Market params */
+  .params-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .param {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .param .key {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .param .val {
+    font-size: 14px;
+    color: #ddd;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  
+  /* Methodology */
+  .methodology {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .methodology h3 {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+  .methodology p {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.7;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 60px;
+  }
+  .footer p {
+    font-size: 10px;
+    color: #444;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  /* Pulse animation for recommended price */
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 212, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+  }
+  .pulse { animation: pulse 2s infinite; }
+</style>
+</head>
+<body>
+<div class="container">
+  
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="logo">ProjX Intelligence</div>
+      <div class="project-name">Woodchester Estate</div>
+      <div class="project-sub">Gatton, QLD 4343 &nbsp;|&nbsp; Newlands (Annual No. 5 Pty Ltd) &nbsp;|&nbsp; 350 Total Lots</div>
+    </div>
+    <div class="header-right">
+      <div class="date">Generated: 2026-04-05</div>
+      <div class="badge pulse">AI Pricing Simulation</div>
+    </div>
+  </div>
+  
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-value blue">$380,000</div>
+      <div class="kpi-label">Stage 6 Recommended</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value green">62.2%</div>
+      <div class="kpi-label">6-Month Sale Probability</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value orange">$390,000</div>
+      <div class="kpi-label">Stage 7 Recommended</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value purple">5,000</div>
+      <div class="kpi-label">Scenarios Simulated</div>
+    </div>
+  </div>
+  
+  <!-- Stage 6 -->
+  <div class="section">
+    <div class="section-title">Stage 6 — Pricing Analysis</div>
+    <div class="section-sub">10 lots &nbsp;|&nbsp; Avg 775 sqm &nbsp;|&nbsp; Not yet released</div>
+    
+    <div class="rec-box">
+      <h3>🎯 Recommended Pricing</h3>
+      <p style="color:#aaa; font-size:13px;">Based on 5,000 Monte Carlo simulations incorporating market conditions, comparable sales, interest rate forecasts, and buyer demand signals.</p>
+      <div class="rec-row">
+        <div class="rec-item">
+          <div class="val">$380,000</div>
+          <div class="lab">Optimal List Price</div>
+        </div>
+        <div class="rec-item">
+          <div class="val" style="color:#00e68a">62.2%</div>
+          <div class="lab">6-Month Sale Probability</div>
+        </div>
+        <div class="rec-item">
+          <div class="val" style="color:#ff9f43">3.8 lots/month</div>
+          <div class="lab">Expected Velocity</div>
+        </div>
+        <div class="rec-item">
+          <div class="val" style="color:#b388ff">+$19,192</div>
+          <div class="lab">vs Stage 5 Avg</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Sale Probability by Price Point</h3>
+        <canvas id="stage6ProbChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Expected Revenue vs Probability</h3>
+        <canvas id="stage6RevChart"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Stage 7 -->
+  <div class="section">
+    <div class="section-title">Stage 7 — Pricing Analysis</div>
+    <div class="section-sub">9 lots &nbsp;|&nbsp; Avg 859 sqm &nbsp;|&nbsp; Not yet released</div>
+    
+    <div class="rec-box">
+      <h3>🎯 Recommended Pricing</h3>
+      <div class="rec-row">
+        <div class="rec-item">
+          <div class="val">$390,000</div>
+          <div class="lab">Optimal List Price</div>
+        </div>
+        <div class="rec-item">
+          <div class="val" style="color:#00e68a">62.3%</div>
+          <div class="lab">6-Month Sale Probability</div>
+        </div>
+        <div class="rec-item">
+          <div class="val" style="color:#ff9f43">3.5 lots/month</div>
+          <div class="lab">Expected Velocity</div>
+        </div>
+        <div class="rec-item">
+          <div class="val" style="color:#b388ff">+$10,000</div>
+          <div class="lab">Stage Escalation</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Sale Probability by Price Point</h3>
+        <canvas id="stage7ProbChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Expected Revenue vs Probability</h3>
+        <canvas id="stage7RevChart"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Model Validation -->
+  <div class="section">
+    <div class="section-title">Model Validation — Back-Test</div>
+    <div class="section-sub">How accurate is the model? We tested it against actual Stage 5 sales data.</div>
+    
+    <div class="backtest">
+      <h3>✅ Stage 5 Back-Test Results</h3>
+      <p>
+        We fed the model historical market data from before Stage 5 launched and asked it to predict the optimal price.
+      </p>
+      <div style="margin: 16px 0;">
+        <div class="accuracy">97.5%</div>
+        <span style="color:#00e68a; font-size:14px; font-weight:600;"> accurate</span>
+      </div>
+      <p>
+        <strong style="color:#ddd;">Model recommended:</strong> $370,000<br>
+        <strong style="color:#ddd;">Actual avg contracted:</strong> $360,808<br>
+        <strong style="color:#ddd;">Difference:</strong> $9,192 (2.5%)
+      </p>
+      <p style="margin-top: 12px; color: #666;">
+        The model's recommendation was within 2.5% of actual market pricing — well within acceptable margin for pricing intelligence.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Market Parameters -->
+  <div class="section">
+    <div class="section-title">Market Data Inputs</div>
+    <div class="section-sub">Real-time data sources feeding the simulation model</div>
+    
+    <div class="params-grid">
+      <div class="param">
+        <div class="key">RBA Cash Rate</div>
+        <div class="val">4.10%</div>
+      </div>
+      <div class="param">
+        <div class="key">Avg Mortgage Rate</div>
+        <div class="val">6.20%</div>
+      </div>
+      <div class="param">
+        <div class="key">Rate Forecast</div>
+        <div class="val">Hold / +25bps May</div>
+      </div>
+      <div class="param">
+        <div class="key">Gatton Median House</div>
+        <div class="val">$654,604</div>
+      </div>
+      <div class="param">
+        <div class="key">Median Weekly Rent</div>
+        <div class="val">$540</div>
+      </div>
+      <div class="param">
+        <div class="key">Rental Yield</div>
+        <div class="val">4.3%</div>
+      </div>
+      <div class="param">
+        <div class="key">Population Growth</div>
+        <div class="val">+2.1% (Lockyer Valley)</div>
+      </div>
+      <div class="param">
+        <div class="key">New Jobs (2024)</div>
+        <div class="val">+805</div>
+      </div>
+      <div class="param">
+        <div class="key">Stage 5 Velocity</div>
+        <div class="val">4.5 lots/month</div>
+      </div>
+      <div class="param">
+        <div class="key">Stage 5 Avg Price</div>
+        <div class="val">$360,808</div>
+      </div>
+      <div class="param">
+        <div class="key">FHB Incentives</div>
+        <div class="val">Active</div>
+      </div>
+      <div class="param">
+        <div class="key">Infrastructure</div>
+        <div class="val">Inland Rail (underway)</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Methodology -->
+  <div class="methodology">
+    <h3>Methodology</h3>
+    <p>
+      This analysis uses Monte Carlo simulation — the same methodology used by institutional investors, 
+      banks, and government agencies for risk-weighted pricing decisions. Each price point was tested 
+      across 5,000 simulated scenarios, with each scenario varying: market sentiment (±5%), interest 
+      rate impacts, lot size premiums, stage escalation factors, buyer demand signals, and price 
+      sensitivity. The model incorporates real comparable sales data, current market conditions, 
+      RBA rate forecasts, local demographic data, and historical sales velocity from previous stages 
+      at Woodchester Estate. The recommended price represents the optimal balance between maximising 
+      revenue and maintaining target sales velocity.
+    </p>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <p>Confidential &nbsp;|&nbsp; ProjX Australia Pty Ltd &nbsp;|&nbsp; AI Pricing Intelligence</p>
+  </div>
+  
+</div>
+
+<script>
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: { color: '#888', font: { family: 'Inter', size: 11 } }
+    }
+  },
+  scales: {
+    x: {
+      ticks: { color: '#555', font: { size: 10 }, callback: function(v) { return '$' + (this.getLabelForValue(v)/1000) + 'k'; } },
+      grid: { color: 'rgba(255,255,255,0.03)' }
+    },
+    y: {
+      ticks: { color: '#555', font: { size: 10 }, callback: function(v) { return v + '%'; } },
+      grid: { color: 'rgba(255,255,255,0.03)' }
+    }
+  }
+};
+
+// Stage 6 Probability Chart
+new Chart(document.getElementById('stage6ProbChart'), {
+  type: 'line',
+  data: {
+    labels: [340000, 345000, 350000, 355000, 360000, 365000, 370000, 375000, 380000, 385000, 390000, 395000, 400000],
+    datasets: [
+      { label: '3-Month', data: [26.7, 26.8, 31.5, 32.5, 34.7, 36.1, 38.2, 40.3, 42.3, 40.9, 39.4, 36.5, 33.7], borderColor: '#ff6b6b', backgroundColor: 'rgba(255,107,107,0.1)', fill: true, tension: 0.4 },
+      { label: '6-Month', data: [40.9, 42.8, 47.5, 49.3, 52.5, 54.3, 57.4, 59.5, 62.2, 58.8, 55.9, 53.9, 50.4], borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.1)', fill: true, tension: 0.4 },
+      { label: '12-Month', data: [53.3, 56.0, 59.8, 62.1, 65.8, 67.5, 71.2, 72.7, 75.3, 72.4, 69.7, 67.1, 63.5], borderColor: '#00e68a', backgroundColor: 'rgba(0,230,138,0.1)', fill: true, tension: 0.4 }
+    ]
+  },
+  options: chartOptions
+});
+
+// Stage 6 Revenue Chart
+new Chart(document.getElementById('stage6RevChart'), {
+  type: 'bar',
+  data: {
+    labels: [340000, 345000, 350000, 355000, 360000, 365000, 370000, 375000, 380000, 385000, 390000, 395000, 400000],
+    datasets: [
+      { label: 'Expected Revenue', data: [339974, 345010, 350072, 354882, 359877, 364715, 369741, 374800, 379778, 385069, 389960, 395055, 399792], backgroundColor: 'rgba(0,212,255,0.3)', borderColor: '#00d4ff', borderWidth: 1 }
+    ]
+  },
+  options: {
+    ...chartOptions,
+    scales: {
+      ...chartOptions.scales,
+      y: {
+        ticks: { color: '#555', font: { size: 10 }, callback: function(v) { return '$' + (v/1000) + 'k'; } },
+        grid: { color: 'rgba(255,255,255,0.03)' }
+      }
+    }
+  }
+});
+
+// Stage 7 Probability Chart
+new Chart(document.getElementById('stage7ProbChart'), {
+  type: 'line',
+  data: {
+    labels: [345000, 350000, 355000, 360000, 365000, 370000, 375000, 380000, 385000, 390000, 395000, 400000, 405000, 410000, 415000],
+    datasets: [
+      { label: '3-Month', data: [25.0, 26.9, 29.4, 31.2, 32.9, 34.7, 36.4, 40.3, 42.3, 42.8, 40.5, 38.0, 35.3, 34.1, 31.3], borderColor: '#ff6b6b', backgroundColor: 'rgba(255,107,107,0.1)', fill: true, tension: 0.4 },
+      { label: '6-Month', data: [39.0, 41.1, 45.7, 46.5, 49.7, 51.6, 54.2, 59.0, 61.7, 62.3, 59.2, 56.5, 53.4, 50.9, 47.0], borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.1)', fill: true, tension: 0.4 },
+      { label: '12-Month', data: [50.4, 53.5, 58.8, 59.7, 63.2, 65.6, 68.0, 72.6, 74.4, 75.0, 72.5, 69.8, 67.1, 64.4, 59.6], borderColor: '#00e68a', backgroundColor: 'rgba(0,230,138,0.1)', fill: true, tension: 0.4 }
+    ]
+  },
+  options: chartOptions
+});
+
+// Stage 7 Revenue Chart
+new Chart(document.getElementById('stage7RevChart'), {
+  type: 'bar',
+  data: {
+    labels: [345000, 350000, 355000, 360000, 365000, 370000, 375000, 380000, 385000, 390000, 395000, 400000, 405000, 410000, 415000],
+    datasets: [
+      { label: 'Expected Revenue', data: [344776, 349873, 354981, 360063, 364858, 370221, 374638, 380000, 384959, 389620, 394983, 399867, 405088, 409942, 414933], backgroundColor: 'rgba(255,159,67,0.3)', borderColor: '#ff9f43', borderWidth: 1 }
+    ]
+  },
+  options: {
+    ...chartOptions,
+    scales: {
+      ...chartOptions.scales,
+      y: {
+        ticks: { color: '#555', font: { size: 10 }, callback: function(v) { return '$' + (v/1000) + 'k'; } },
+        grid: { color: 'rgba(255,255,255,0.03)' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

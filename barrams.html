@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barrams Road — Simulation Engine Results</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; }
+  .header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 32px 40px; border-bottom: 2px solid #e94560; }
+  .header h1 { font-size: 24px; font-weight: 700; color: #fff; }
+  .header p { color: #aaa; margin-top: 6px; font-size: 13px; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 40px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi { background: #16213e; border-radius: 10px; padding: 20px; border-left: 4px solid #e94560; }
+  .kpi .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi .value { font-size: 22px; font-weight: 700; color: #fff; margin-top: 6px; }
+  .kpi .sub { font-size: 11px; color: #aaa; margin-top: 4px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .card { background: #16213e; border-radius: 10px; padding: 24px; }
+  .card h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .chart-wrap { position: relative; height: 260px; }
+  .warning { background: #2a1a0e; border: 1px solid #e67e22; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }
+  .warning h4 { color: #e67e22; font-size: 13px; margin-bottom: 6px; }
+  .warning p { color: #ccc; font-size: 13px; line-height: 1.6; }
+  .lot-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .lot-table th { background: #0f3460; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; }
+  .lot-table td { padding: 6px 10px; border-bottom: 1px solid #1a2a4a; }
+  .lot-table tr:hover { background: #1a2a4a; }
+  .green { background: #1a3a2a; color: #2ecc71; font-weight: 600; border-radius: 4px; padding: 2px 8px; }
+  .amber { background: #3a2a1a; color: #e67e22; font-weight: 600; border-radius: 4px; padding: 2px 8px; }
+  .red { background: #3a1a1a; color: #e74c3c; font-weight: 600; border-radius: 4px; padding: 2px 8px; }
+  .insight { background: #0f3460; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; }
+  .insight .title { color: #3498db; font-weight: 600; font-size: 13px; }
+  .insight .body { color: #ccc; font-size: 12px; margin-top: 4px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏗️ BARRAMS ROAD ESTATE — SIMULATION ENGINE RESULTS</h1>
+  <p>7005 & 7006 Barrams Road, South Ripley QLD 4306 | Developer: Hellier McFarland | Generated: April 2026 | XGBoost + Monte Carlo (10,000 scenarios)</p>
+</div>
+<div class="container">
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi"><div class="label">P50 Sell-Out</div><div class="value">14.6 mo</div><div class="sub">From Jul 2026 launch = Sep 2027</div></div>
+    <div class="kpi"><div class="label">P10 (Fast)</div><div class="value">14.1 mo</div><div class="sub">Aug 2027 — Bull scenario</div></div>
+    <div class="kpi"><div class="label">P90 (Slow)</div><div class="value">15.2 mo</div><div class="sub">Oct 2027 — Bear scenario</div></div>
+    <div class="kpi"><div class="label">Mean GRV</div><div class="value">$36.55M</div><div class="sub">Std dev ±$81,460</div></div>
+    <div class="kpi"><div class="label">Sell-out &lt;18mo</div><div class="value">100%</div><div class="sub">All 10,000 scenarios</div></div>
+    <div class="kpi"><div class="label">Model R²</div><div class="value">0.616</div><div class="sub">62.5% within 1 month</div></div>
+  </div>
+
+  <!-- Model warning -->
+  <div class="warning">
+    <h4>⚠️ MODEL ACCURACY NOTE — READ BEFORE USING FOR DECISIONS</h4>
+    <p>R² = 0.616, RMSE = 2.1 months, MAE = 1.1 months. Trained on 41 comparable sales (Terralytics, Apr 2026). 
+    The dominant feature is <strong>base_demand_index (40.7%)</strong> and <strong>is_south_ripley (29.7%)</strong> — meaning the model is heavily driven by demand environment and location, not lot-level characteristics. 
+    This is expected with a small dataset. <strong>The sell-out timeline is release-schedule-constrained</strong> (last release drops month 14) — so P10/P50/P90 convergence is tight. 
+    Upgrade to CoreLogic data (~$300/mo) to expand training set and improve lot-level predictions.</p>
+  </div>
+
+  <div class="grid-2">
+    <!-- Monte Carlo histogram -->
+    <div class="card">
+      <h3>Monte Carlo — Sell-Out Month Distribution (10,000 scenarios)</h3>
+      <div class="chart-wrap"><canvas id="mcChart"></canvas></div>
+    </div>
+    <!-- Scenario comparison -->
+    <div class="card">
+      <h3>Bull / Base / Bear Scenario Comparison</h3>
+      <div class="chart-wrap"><canvas id="scenarioChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Feature importance -->
+    <div class="card">
+      <h3>XGBoost Feature Importances</h3>
+      <div class="chart-wrap"><canvas id="featChart"></canvas></div>
+    </div>
+    <!-- Key insights -->
+    <div class="card">
+      <h3>Key Simulation Findings</h3>
+      <div class="insight"><div class="title">Sell-out is release-schedule-constrained</div><div class="body">All 10,000 scenarios converge on months 14–15. The release cadence (8 releases from Jul 2026 to Apr 2027) is the binding constraint, not demand. This means sell-out timing can be accelerated by compressing the release schedule — not by lowering prices.</div></div>
+      <div class="insight"><div class="title">Demand environment dominates (40.7% importance)</div><div class="body">Base demand index is the #1 predictor. The $15–20k/month EOI campaign is the highest-leverage investment in the project. Every additional EOI registration directly reduces time-to-sell.</div></div>
+      <div class="insight"><div class="title">South Ripley premium is real (29.7% importance)</div><div class="body">Being in South Ripley vs Ripley is the #2 predictor of faster sales. Providence overflow demand directly benefits Barrams Road. Providence selling out = Barrams Road's best marketing.</div></div>
+      <div class="insight"><div class="title">All 81 lots rated GREEN</div><div class="body">With EOI buildup and South Ripley location factored in, the model predicts sub-1-month sell time for all lots once released. The real risk is release timing and the 14-month schedule — not individual lot characteristics.</div></div>
+    </div>
+  </div>
+
+  <!-- Lot table -->
+  <div class="card" style="margin-bottom:24px">
+    <h3>Lot-Level Predictions — All 81 Lots</h3>
+    <table class="lot-table" id="lotTable">
+      <thead><tr>
+        <th>Lot</th><th>Stage</th><th>Type</th><th>Size</th><th>Price</th><th>$/sqm</th><th>Release</th><th>Expected (mo)</th><th>P10</th><th>P50</th><th>P90</th><th>Risk</th>
+      </tr></thead>
+      <tbody id="lotBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+// Monte Carlo histogram
+const mcCtx = document.getElementById('mcChart').getContext('2d');
+new Chart(mcCtx, {
+  type: 'bar',
+  data: {
+    labels: ['14', '15', '16', '17', '18'],
+    datasets: [{
+      label: 'Scenarios',
+      data: [8240, 1682, 76, 1, 1],
+      backgroundColor: '#3498db',
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { title: { display: true, text: 'Months from Launch', color: '#aaa' }, ticks: { color: '#aaa' }, grid: { color: '#1a2a4a' } },
+      y: { title: { display: true, text: 'Scenarios (of 10,000)', color: '#aaa' }, ticks: { color: '#aaa' }, grid: { color: '#1a2a4a' } }
+    }
+  }
+});
+
+// Scenario comparison
+const scCtx = document.getElementById('scenarioChart').getContext('2d');
+new Chart(scCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Bull', 'Base', 'Bear'],
+    datasets: [
+      { label: 'Sell-out Month', data: [14.1, 14.6, 15.3], backgroundColor: ['#2ecc71','#3498db','#e74c3c'], borderRadius: 6 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { min: 12, max: 18, title: { display: true, text: 'Months from Jul 2026', color: '#aaa' }, ticks: { color: '#aaa' }, grid: { color: '#1a2a4a' } },
+      x: { ticks: { color: '#aaa' }, grid: { color: '#1a2a4a' } }
+    }
+  }
+});
+
+// Feature importance
+const featCtx = document.getElementById('featChart').getContext('2d');
+new Chart(featCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Base Demand', 'South Ripley', 'Release Month', 'EOI Buildup', 'Is Corner', 'Price/sqm', 'Area', 'Frontage', 'Price'],
+    datasets: [{
+      data: [0.407, 0.297, 0.088, 0.050, 0.039, 0.042, 0.037, 0.023, 0.018],
+      backgroundColor: '#e94560', borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#aaa' }, grid: { color: '#1a2a4a' } },
+      y: { ticks: { color: '#aaa', font: { size: 11 } }, grid: { color: '#1a2a4a' } }
+    }
+  }
+});
+
+// Lot table
+const LOTS_DATA = [{"lot": 1, "stage": 1, "type": "Terrace", "area_sqm": 313, "price": 465000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 2, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 3, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 4, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 5, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 6, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 7, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 8, "stage": 1, "type": "Terrace", "area_sqm": 280, "price": 450000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 9, "stage": 1, "type": "Terrace", "area_sqm": 277, "price": 435000, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.11, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 10, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 11, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 12, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 13, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.13, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 14, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 15, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 16, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.15, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 17, "stage": 1, "type": "Terrace", "area_sqm": 280, "price": 445000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.15, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 18, "stage": 1, "type": "Terrace", "area_sqm": 280, "price": 445000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.15, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 19, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 20, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 21, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 1.0, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.14, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 22, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 23, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 24, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 400000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 25, "stage": 3, "type": "Terrace", "area_sqm": 380, "price": 540000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.32, "p90": 0.65, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 26, "stage": 1, "type": "Terrace", "area_sqm": 287, "price": 435000, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.11, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 27, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 28, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 29, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 30, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 31, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 32, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 33, "stage": 1, "type": "Terrace", "area_sqm": 280, "price": 440000, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.11, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 34, "stage": 1, "type": "Terrace", "area_sqm": 280, "price": 440000, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.1, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 35, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.1, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 36, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.1, "p90": 0.18, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 37, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 38, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.11, "p90": 0.19, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 39, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 40, "stage": 1, "type": "Terrace", "area_sqm": 210, "price": 397500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "Jul-26"}, {"lot": 41, "stage": 3, "type": "Terrace", "area_sqm": 478, "price": 610000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.24, "p90": 0.44, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 42, "stage": 3, "type": "PremiumVilla", "area_sqm": 598, "price": 707500, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.45, "p90": 0.77, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 43, "stage": 3, "type": "Villa", "area_sqm": 280, "price": 442500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 44, "stage": 3, "type": "PremiumVilla", "area_sqm": 420, "price": 595000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.26, "p90": 0.52, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 45, "stage": 3, "type": "PremiumVilla", "area_sqm": 424, "price": 582500, "orientation": 0.25, "expected_months": 0.11, "p10": 0.1, "p50": 0.3, "p90": 0.62, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 46, "stage": 3, "type": "Villa", "area_sqm": 300, "price": 450000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 47, "stage": 3, "type": "PremiumVilla", "area_sqm": 375, "price": 530000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.32, "p90": 0.62, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 48, "stage": 3, "type": "Villa", "area_sqm": 300, "price": 450000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.16, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 49, "stage": 3, "type": "Villa", "area_sqm": 300, "price": 450000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 50, "stage": 3, "type": "PremiumVilla", "area_sqm": 537, "price": 670000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.23, "p90": 0.41, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 51, "stage": 3, "type": "PremiumVilla", "area_sqm": 549, "price": 680000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.12, "p90": 0.21, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 52, "stage": 3, "type": "Villa", "area_sqm": 280, "price": 442500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 53, "stage": 3, "type": "Villa", "area_sqm": 280, "price": 472500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.17, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 54, "stage": 3, "type": "PremiumVilla", "area_sqm": 350, "price": 510000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.15, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 55, "stage": 3, "type": "PremiumVilla", "area_sqm": 350, "price": 510000, "orientation": 0.75, "expected_months": 0.1, "p10": 0.1, "p50": 0.1, "p90": 0.15, "risk": "Green", "release_recommendation": "May-27"}, {"lot": 56, "stage": 2, "type": "Terrace", "area_sqm": 323, "price": 470000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.23, "p90": 2.26, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 57, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.13, "p90": 1.96, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 58, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.13, "p90": 1.95, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 59, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.13, "p90": 1.97, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 60, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.09, "p90": 1.88, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 61, "stage": 2, "type": "Terrace", "area_sqm": 275, "price": 437500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.09, "p90": 1.9, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 62, "stage": 2, "type": "Terrace", "area_sqm": 275, "price": 437500, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.1, "p90": 1.92, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 63, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.11, "p90": 1.96, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 64, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.07, "p90": 1.97, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 65, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.08, "p90": 1.94, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 66, "stage": 2, "type": "Terrace", "area_sqm": 206, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.1, "p90": 1.89, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 67, "stage": 2, "type": "Terrace", "area_sqm": 331, "price": 475000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.2, "p90": 2.21, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 68, "stage": 2, "type": "Terrace", "area_sqm": 239, "price": 420000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.11, "p90": 1.94, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 69, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.09, "p90": 2.0, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 70, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.1, "p90": 1.97, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 71, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.09, "p90": 1.92, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 72, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.1, "p90": 1.98, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 73, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.09, "p90": 1.94, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 74, "stage": 2, "type": "Terrace", "area_sqm": 260, "price": 435000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.13, "p90": 2.02, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 75, "stage": 2, "type": "Terrace", "area_sqm": 260, "price": 435000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.12, "p90": 1.97, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 76, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.09, "p90": 1.92, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 77, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.14, "p90": 1.96, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 78, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.12, "p90": 1.96, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 79, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.12, "p90": 2.0, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 80, "stage": 2, "type": "Terrace", "area_sqm": 195, "price": 395000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.08, "p90": 1.94, "risk": "Green", "release_recommendation": "Jan-27"}, {"lot": 81, "stage": 2, "type": "Terrace", "area_sqm": 299, "price": 455000, "orientation": 0.5, "expected_months": 0.1, "p10": 0.1, "p50": 1.35, "p90": 2.44, "risk": "Green", "release_recommendation": "Jan-27"}];
+const lots = LOTS_DATA;
+const tbody = document.getElementById('lotBody');
+lots.forEach(l => {
+  const psqm = Math.round(l.price / l.area_sqm);
+  const riskClass = l.risk.toLowerCase();
+  tbody.innerHTML += `<tr>
+    <td>${l.lot}</td><td>${l.stage}</td><td>${l.type}</td><td>${l.area_sqm}m²</td>
+    <td>$${l.price.toLocaleString()}</td><td>$${psqm}</td><td>${l.release_recommendation}</td>
+    <td>${l.expected_months.toFixed(2)}</td><td>${l.p10}</td><td>${l.p50}</td><td>${l.p90}</td>
+    <td><span class="${riskClass}">${l.risk}</span></td>
+  </tr>`;
+});
+</script>
+<script>
+// Inject lot data
+</script>
+</body>
+</html>

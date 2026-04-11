@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjX Intelligence | Oreana — South Ripley</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e1a;
+      --bg2: #0f1525;
+      --bg3: #141929;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-hover: rgba(255,255,255,0.07);
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --accent3: #06b6d4;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --orange: #f97316;
+      --text: #f1f5f9;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --border: rgba(255,255,255,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 10% 0%, rgba(99,102,241,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 100%, rgba(6,182,212,0.08) 0%, transparent 60%);
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(6,182,212,0.08) 100%);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      padding: 28px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-logo {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: white;
+      flex-shrink: 0;
+    }
+    .header-title h1 {
+      font-size: 20px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .header-title p {
+      font-size: 12px; color: var(--text2); margin-top: 2px;
+    }
+    .header-meta {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .header-chip {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: var(--text2);
+    }
+    .header-chip strong { color: var(--text); }
+
+    /* ── Section ── */
+    .section {
+      padding: 40px 0;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Glass card ── */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(99,102,241,0.25);
+      background: var(--glass-hover);
+    }
+
+    /* ── KPI Grid ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+    }
+    .kpi-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3));
+      border-radius: 14px 14px 0 0;
+    }
+    .kpi-card.green::before { background: linear-gradient(90deg, var(--green), #34d399); }
+    .kpi-card.yellow::before { background: linear-gradient(90deg, var(--yellow), #fcd34d); }
+    .kpi-card.red::before { background: linear-gradient(90deg, var(--red), #f87171); }
+    .kpi-card.orange::before { background: linear-gradient(90deg, var(--orange), #fbbf24); }
+    .kpi-label {
+      font-size: 11px; color: var(--text3); font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 28px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.5px; line-height: 1;
+    }
+    .kpi-sub {
+      font-size: 12px; color: var(--text2); margin-top: 6px;
+    }
+
+    /* ── Charts row ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .charts-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .charts-row, .charts-row-3 { grid-template-columns: 1fr; }
+    }
+    .chart-wrap {
+      position: relative;
+      height: 260px;
+    }
+    .chart-wrap-sm {
+      position: relative;
+      height: 200px;
+    }
+
+    /* ── Stage cards ── */
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) { .stage-grid { grid-template-columns: 1fr; } }
+    .stage-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .stage-number {
+      font-size: 11px; font-weight: 600; color: var(--accent3);
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .stage-stat {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .stage-stat:last-child { border-bottom: none; }
+    .stage-stat-label { color: var(--text2); }
+    .stage-stat-val { font-weight: 600; color: var(--text); }
+
+    /* ── Prob bar ── */
+    .prob-bar-wrap { margin-top: 14px; }
+    .prob-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text2); margin-bottom: 5px;
+    }
+    .prob-bar-track {
+      height: 6px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s ease;
+    }
+    .prob-bar-fill.blue { background: linear-gradient(90deg, var(--accent), var(--accent3)); }
+    .prob-bar-fill.green { background: linear-gradient(90deg, var(--green), #34d399); }
+    .prob-bar-fill.yellow { background: linear-gradient(90deg, var(--yellow), #fcd34d); }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    thead tr {
+      background: rgba(99,102,241,0.1);
+    }
+    th {
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+      vertical-align: top;
+    }
+    td.primary { color: var(--text); font-weight: 500; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .risk-row td { background: rgba(239,68,68,0.04); }
+    .risk-row:hover td { background: rgba(239,68,68,0.07) !important; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+    .badge-high { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+    .badge-medium { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+    .badge-low { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+    .badge-terrace { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); }
+    .badge-villa { background: rgba(6,182,212,0.15); color: #67e8f9; border: 1px solid rgba(6,182,212,0.2); }
+    .badge-premium { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.2); }
+    .badge-risk { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+
+    /* ── Objection tags ── */
+    .obj-tag {
+      display: inline-block;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      color: #fcd34d;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin: 2px 2px 2px 0;
+    }
+
+    /* ── Buyer profile pills ── */
+    .buyer-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .buyer-pill {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .bp-fhb { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+    .bp-inv { background: rgba(6,182,212,0.2); color: #67e8f9; }
+    .bp-upg { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+    .bp-dsz { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+
+    /* ── Risk register ── */
+    .risk-item {
+      background: rgba(239,68,68,0.05);
+      border: 1px solid rgba(239,68,68,0.15);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .risk-lot-num {
+      font-size: 22px; font-weight: 700; color: var(--red);
+      text-align: center;
+    }
+    .risk-lot-label { font-size: 10px; color: var(--text3); text-align: center; }
+    .risk-detail-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .risk-detail-meta { font-size: 11px; color: var(--text2); }
+    .risk-prob { text-align: right; }
+    .risk-prob-val { font-size: 20px; font-weight: 700; color: var(--red); }
+    .risk-prob-label { font-size: 10px; color: var(--text3); }
+
+    /* ── Market inputs ── */
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .market-input {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .market-input-label { font-size: 12px; color: var(--text2); }
+    .market-input-val { font-size: 16px; font-weight: 700; color: var(--accent3); }
+
+    /* ── Competitor ── */
+    .comp-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) { .comp-row { grid-template-columns: 1fr; } }
+    .comp-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 22px;
+    }
+    .comp-title {
+      font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .comp-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .comp-metric {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .comp-metric:last-child { border-bottom: none; }
+    .comp-metric-label { color: var(--text2); }
+    .comp-metric-val { font-weight: 600; color: var(--text); }
+    .comp-metric-val.green { color: var(--green); }
+    .comp-metric-val.red { color: var(--red); }
+    .comp-metric-val.yellow { color: var(--yellow); }
+
+    /* ── Methodology ── */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .method-item {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .method-item h4 {
+      font-size: 12px; font-weight: 600; color: var(--accent3); margin-bottom: 8px;
+    }
+    .method-item p {
+      font-size: 11px; color: var(--text2); line-height: 1.6;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      margin-top: 40px;
+      font-size: 11px;
+      color: var(--text3);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* ── Inline prob % ── */
+    .pct { font-weight: 600; }
+    .pct.high { color: var(--green); }
+    .pct.med { color: var(--yellow); }
+    .pct.low { color: var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- ── EMBEDDED DATA ── -->
+<script>
+const RESULTS = {"meta":{"project":"Oreana","address":"7005 & 7006 Barrams Road, South Ripley QLD 4306","developer":"Hellier McFarland","total_lots":81,"total_grv":35227500,"avg_price":434907,"launch_date":"2026-07","n_simulations":5000,"model_version":"1.0.0","generated":"2026-04-06"},"kpis":{"total_lots":81,"avg_price":434907,"total_grv":35227500,"avg_prob_6m":0.5389,"avg_prob_12m":0.7734,"expected_sold_6m":43.6,"expected_sold_12m":62.6,"projected_monthly_velocity":7.5,"expected_revenue_6m":18552977,"risk_lot_count":14},"market_inputs":{"rba_cash_rate_pct":4.1,"rba_hike_probability_pct":35.0,"avg_mortgage_rate_pct":6.2,"vacancy_rate_pct":4.16,"ipswich_land_growth_2026_pct":51,"fhb_incentives":true,"providence_monthly_velocity":15},"aggregate_buyer_profile":{"FHB":0.4383,"Investor":0.2602,"Upgrader":0.1762,"Downsizer":0.1253},"monthly_absorption_forecast":[10.4,8.98,7.77,6.72,5.82,5.05,4.39,3.82,3.33,2.9,2.53,2.21],"type_absorption":{"Premium Villa":{"count":8,"avg_price":598125,"avg_prob_6m":0.3247,"avg_prob_12m":0.5412,"expected_sold_6m":2.6,"expected_sold_12m":4.3},"Terrace":{"count":67,"avg_price":413955,"avg_prob_6m":0.5721,"avg_prob_12m":0.8076,"expected_sold_6m":38.3,"expected_sold_12m":54.1},"Villa":{"count":6,"avg_price":451250,"avg_prob_6m":0.4538,"avg_prob_12m":0.7008,"expected_sold_6m":2.7,"expected_sold_12m":4.2}},"stage_summary":{"Stage 1":{"count":39,"avg_price":407949,"total_grv":15910000,"avg_prob_6m":0.5726,"avg_prob_12m":0.8092,"expected_sold_6m":22.3},"Stage 2":{"count":26,"avg_price":410577,"total_grv":10675000,"avg_prob_6m":0.5787,"avg_prob_12m":0.8122,"expected_sold_6m":15.0},"Stage 3":{"count":16,"avg_price":540156,"total_grv":8642500,"avg_prob_6m":0.392,"avg_prob_12m":0.6228,"expected_sold_6m":6.3}},"risk_register":[{"lot":45,"stage":3,"type":"Premium Villa","size":424,"price":582500,"orientation":"South East","prob_6m":0.2678,"prob_12m":0.463,"objections":["Limited natural light, higher energy costs","May limit design options and increase build costs"],"reason":"Unfavourable attributes"},{"lot":50,"stage":3,"type":"Premium Villa","size":537,"price":670000,"orientation":"South East","prob_6m":0.297,"prob_12m":0.506,"objections":["Limited natural light, higher energy costs","Premium pricing, harder to finance for FHBs"],"reason":"High price point"},{"lot":47,"stage":3,"type":"Premium Villa","size":375,"price":530000,"orientation":"South East","prob_6m":0.2978,"prob_12m":0.505,"objections":["Limited natural light, higher energy costs"],"reason":"Unfavourable attributes"},{"lot":42,"stage":3,"type":"Premium Villa","size":598,"price":707500,"orientation":"North East","prob_6m":0.3072,"prob_12m":0.5236,"objections":["Premium pricing, harder to finance for FHBs"],"reason":"High price point"},{"lot":54,"stage":3,"type":"Premium Villa","size":350,"price":510000,"orientation":"North East","prob_6m":0.345,"prob_12m":0.5676,"objections":[],"reason":"Unfavourable attributes"},{"lot":55,"stage":3,"type":"Premium Villa","size":350,"price":510000,"orientation":"North East","prob_6m":0.3514,"prob_12m":0.574,"objections":[],"reason":"Below-average absorption probability"},{"lot":51,"stage":3,"type":"Premium Villa","size":549,"price":680000,"orientation":"North East","prob_6m":0.3614,"prob_12m":0.5844,"objections":["Premium pricing, harder to finance for FHBs"],"reason":"High price point"},{"lot":44,"stage":3,"type":"Premium Villa","size":420,"price":595000,"orientation":"North East","prob_6m":0.3698,"prob_12m":0.6058,"objections":[],"reason":"Below-average absorption probability"},{"lot":49,"stage":3,"type":"Villa","size":300,"price":450000,"orientation":"South East","prob_6m":0.402,"prob_12m":0.6506,"objections":["Limited natural light, higher energy costs"],"reason":"Below-average absorption probability"},{"lot":46,"stage":3,"type":"Villa","size":300,"price":450000,"orientation":"South East","prob_6m":0.4042,"prob_12m":0.646,"objections":["Limited natural light, higher energy costs"],"reason":"Below-average absorption probability"},{"lot":48,"stage":3,"type":"Villa","size":300,"price":450000,"orientation":"South East","prob_6m":0.4046,"prob_12m":0.6418,"objections":["Limited natural light, higher energy costs"],"reason":"Below-average absorption probability"},{"lot":41,"stage":3,"type":"Terrace","size":478,"price":610000,"orientation":"South","prob_6m":0.407,"prob_12m":0.6452,"objections":["Limited natural light, higher energy costs","Premium pricing, harder to finance for FHBs"],"reason":"High price point"},{"lot":1,"stage":1,"type":"Terrace","size":313,"price":465000,"orientation":"West","prob_6m":0.4352,"prob_12m":0.6768,"objections":["Afternoon heat exposure"],"reason":"Below-average absorption probability"},{"lot":8,"stage":1,"type":"Terrace","size":280,"price":450000,"orientation":"West","prob_6m":0.4374,"prob_12m":0.6734,"objections":["Afternoon heat exposure"],"reason":"Below-average absorption probability"}],"lots":[{"lot":42,"stage":3,"type":"Premium Villa","category":"premium_villa","size":598,"frontage":15,"depth":28,"orientation":"North East","shape":"Corner","price":707500,"price_per_sqm":1183,"base_monthly_prob":0.0638,"prob_3m":0.1718,"prob_6m":0.3072,"prob_12m":0.5236,"avg_sale_month":5.75,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":["Premium pricing, harder to finance for FHBs"]},{"lot":44,"stage":3,"type":"Premium Villa","category":"premium_villa","size":420,"frontage":15.6,"depth":28,"orientation":"North East","shape":"Corner","price":595000,"price_per_sqm":1417,"base_monthly_prob":0.0778,"prob_3m":0.21,"prob_6m":0.3698,"prob_12m":0.6058,"avg_sale_month":5.58,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":[]},{"lot":45,"stage":3,"type":"Premium Villa","category":"premium_villa","size":424,"frontage":15,"depth":30,"orientation":"South East","shape":"Irregular","price":582500,"price_per_sqm":1374,"base_monthly_prob":0.0521,"prob_3m":0.1418,"prob_6m":0.2678,"prob_12m":0.463,"avg_sale_month":5.88,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":["Limited natural light, higher energy costs","May limit design options and increase build costs"]},{"lot":47,"stage":3,"type":"Premium Villa","category":"premium_villa","size":375,"frontage":12.5,"depth":30,"orientation":"South East","shape":"Regular","price":530000,"price_per_sqm":1413,"base_monthly_prob":0.0579,"prob_3m":0.1612,"prob_6m":0.2978,"prob_12m":0.505,"avg_sale_month":5.82,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":["Limited natural light, higher energy costs"]},{"lot":50,"stage":3,"type":"Premium Villa","category":"premium_villa","size":537,"frontage":19,"depth":30,"orientation":"South East","shape":"Corner","price":670000,"price_per_sqm":1248,"base_monthly_prob":0.0575,"prob_3m":0.1584,"prob_6m":0.297,"prob_12m":0.506,"avg_sale_month":5.87,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":["Limited natural light, higher energy costs","Premium pricing, harder to finance for FHBs"]},{"lot":51,"stage":3,"type":"Premium Villa","category":"premium_villa","size":549,"frontage":13.7,"depth":28,"orientation":"North East","shape":"Corner","price":680000,"price_per_sqm":1239,"base_monthly_prob":0.0716,"prob_3m":0.1932,"prob_6m":0.3614,"prob_12m":0.5844,"avg_sale_month":5.64,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":["Premium pricing, harder to finance for FHBs"]},{"lot":54,"stage":3,"type":"Premium Villa","category":"premium_villa","size":350,"frontage":12.5,"depth":28,"orientation":"North East","shape":"Regular","price":510000,"price_per_sqm":1457,"base_monthly_prob":0.0721,"prob_3m":0.19,"prob_6m":0.345,"prob_12m":0.5676,"avg_sale_month":5.64,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":[]},{"lot":55,"stage":3,"type":"Premium Villa","category":"premium_villa","size":350,"frontage":12.5,"depth":28,"orientation":"North East","shape":"Regular","price":510000,"price_per_sqm":1457,"base_monthly_prob":0.0721,"prob_3m":0.1884,"prob_6m":0.3514,"prob_12m":0.574,"avg_sale_month":5.6,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.1,"Investor":0.15,"Upgrader":0.55,"Downsizer":0.2},"objections":[]},{"lot":2,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"West","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.125,"prob_3m":0.315,"prob_6m":0.5296,"prob_12m":0.7744,"avg_sale_month":5.01,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Afternoon heat exposure","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":3,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"West","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.125,"prob_3m":0.3172,"prob_6m":0.533,"prob_12m":0.7798,"avg_sale_month":5.01,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Afternoon heat exposure","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":4,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"West","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.125,"prob_3m":0.3128,"prob_6m":0.5262,"prob_12m":0.787,"avg_sale_month":5.12,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Afternoon heat exposure","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":5,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"West","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.125,"prob_3m":0.3196,"prob_6m":0.5366,"prob_12m":0.7818,"avg_sale_month":5.01,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Afternoon heat exposure","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":6,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"West","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.125,"prob_3m":0.2992,"prob_6m":0.5206,"prob_12m":0.7804,"avg_sale_month":5.17,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Afternoon heat exposure","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":7,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"West","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.125,"prob_3m":0.3246,"prob_6m":0.5382,"prob_12m":0.7824,"avg_sale_month":4.96,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Afternoon heat exposure","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":10,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.3994,"prob_6m":0.6544,"prob_12m":0.8774,"avg_sale_month":4.54,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":11,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4018,"prob_6m":0.641,"prob_12m":0.8758,"avg_sale_month":4.62,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":12,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.416,"prob_6m":0.6564,"prob_12m":0.8738,"avg_sale_month":4.49,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":13,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.412,"prob_6m":0.654,"prob_12m":0.8708,"avg_sale_month":4.48,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":14,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.411,"prob_6m":0.6532,"prob_12m":0.8734,"avg_sale_month":4.5,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":15,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4114,"prob_6m":0.6502,"prob_12m":0.8736,"avg_sale_month":4.54,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":16,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.404,"prob_6m":0.6366,"prob_12m":0.8654,"avg_sale_month":4.57,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":19,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4102,"prob_6m":0.643,"prob_12m":0.8698,"avg_sale_month":4.54,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":20,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4082,"prob_6m":0.6514,"prob_12m":0.8684,"avg_sale_month":4.51,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":21,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4136,"prob_6m":0.6586,"prob_12m":0.877,"avg_sale_month":4.51,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":22,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.416,"prob_6m":0.6596,"prob_12m":0.8742,"avg_sale_month":4.47,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":23,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4134,"prob_6m":0.647,"prob_12m":0.8738,"avg_sale_month":4.52,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":24,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"North","shape":"Regular","price":400000,"price_per_sqm":1905,"base_monthly_prob":0.1677,"prob_3m":0.4078,"prob_6m":0.649,"prob_12m":0.8738,"avg_sale_month":4.53,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":27,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3326,"prob_6m":0.5594,"prob_12m":0.799,"avg_sale_month":4.95,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":28,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3396,"prob_6m":0.5676,"prob_12m":0.8076,"avg_sale_month":4.9,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":29,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3308,"prob_6m":0.5556,"prob_12m":0.7976,"avg_sale_month":4.94,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":30,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3236,"prob_6m":0.5412,"prob_12m":0.7984,"avg_sale_month":5.02,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":31,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.326,"prob_6m":0.548,"prob_12m":0.7974,"avg_sale_month":4.97,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":32,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3254,"prob_6m":0.5536,"prob_12m":0.7942,"avg_sale_month":4.96,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":35,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3306,"prob_6m":0.55,"prob_12m":0.7852,"avg_sale_month":4.91,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":1,"stage":1,"type":"Terrace","category":"terrace_mid","size":313,"frontage":11.5,"depth":28,"orientation":"West","shape":"Corner","price":465000,"price_per_sqm":1486,"base_monthly_prob":0.0964,"prob_3m":0.2528,"prob_6m":0.4352,"prob_12m":0.6768,"avg_sale_month":5.34,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Afternoon heat exposure"]},{"lot":8,"stage":1,"type":"Terrace","category":"terrace_mid","size":280,"frontage":10,"depth":28,"orientation":"West","shape":"Corner","price":450000,"price_per_sqm":1607,"base_monthly_prob":0.0964,"prob_3m":0.247,"prob_6m":0.4374,"prob_12m":0.6734,"avg_sale_month":5.31,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Afternoon heat exposure"]},{"lot":9,"stage":1,"type":"Terrace","category":"terrace_mid","size":277,"frontage":7.3,"depth":28,"orientation":"North","shape":"Corner","price":435000,"price_per_sqm":1570,"base_monthly_prob":0.1449,"prob_3m":0.3572,"prob_6m":0.5864,"prob_12m":0.8256,"avg_sale_month":4.82,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":17,"stage":1,"type":"Terrace","category":"terrace_mid","size":280,"frontage":10,"depth":28,"orientation":"North","shape":"Regular","price":445000,"price_per_sqm":1589,"base_monthly_prob":0.1342,"prob_3m":0.3476,"prob_6m":0.5632,"prob_12m":0.8048,"avg_sale_month":4.88,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":18,"stage":1,"type":"Terrace","category":"terrace_mid","size":280,"frontage":10,"depth":28,"orientation":"North","shape":"Regular","price":445000,"price_per_sqm":1589,"base_monthly_prob":0.1342,"prob_3m":0.3486,"prob_6m":0.5776,"prob_12m":0.8132,"avg_sale_month":4.87,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":26,"stage":1,"type":"Terrace","category":"terrace_mid","size":287,"frontage":7.3,"depth":28,"orientation":"South","shape":"Corner","price":435000,"price_per_sqm":1516,"base_monthly_prob":0.112,"prob_3m":0.2964,"prob_6m":0.5038,"prob_12m":0.7462,"avg_sale_month":5.09,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":33,"stage":1,"type":"Terrace","category":"terrace_mid","size":280,"frontage":10,"depth":28,"orientation":"South","shape":"Regular","price":440000,"price_per_sqm":1571,"base_monthly_prob":0.1037,"prob_3m":0.2702,"prob_6m":0.486,"prob_12m":0.7182,"avg_sale_month":5.2,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":34,"stage":1,"type":"Terrace","category":"terrace_mid","size":280,"frontage":10,"depth":28,"orientation":"South","shape":"Regular","price":440000,"price_per_sqm":1571,"base_monthly_prob":0.1037,"prob_3m":0.279,"prob_6m":0.474,"prob_12m":0.7276,"avg_sale_month":5.25,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":36,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3204,"prob_6m":0.5394,"prob_12m":0.7794,"avg_sale_month":4.99,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":37,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.326,"prob_6m":0.553,"prob_12m":0.7922,"avg_sale_month":4.95,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":38,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3412,"prob_6m":0.5464,"prob_12m":0.7956,"avg_sale_month":4.95,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":39,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3274,"prob_6m":0.5564,"prob_12m":0.7968,"avg_sale_month":4.91,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":40,"stage":1,"type":"Terrace","category":"terrace_entry","size":210,"frontage":7.5,"depth":28,"orientation":"South","shape":"Regular","price":397500,"price_per_sqm":1893,"base_monthly_prob":0.1296,"prob_3m":0.3408,"prob_6m":0.5588,"prob_12m":0.7982,"avg_sale_month":4.88,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":57,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3332,"prob_6m":0.5538,"prob_12m":0.7994,"avg_sale_month":4.94,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":58,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3328,"prob_6m":0.5574,"prob_12m":0.7938,"avg_sale_month":4.87,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":59,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3294,"prob_6m":0.557,"prob_12m":0.797,"avg_sale_month":4.93,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":60,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3428,"prob_6m":0.5496,"prob_12m":0.7854,"avg_sale_month":4.84,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":63,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3334,"prob_6m":0.5504,"prob_12m":0.7984,"avg_sale_month":4.97,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":64,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3332,"prob_6m":0.5516,"prob_12m":0.7952,"avg_sale_month":4.94,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":65,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3328,"prob_6m":0.5538,"prob_12m":0.7912,"avg_sale_month":4.87,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":66,"stage":2,"type":"Terrace","category":"terrace_entry","size":206,"frontage":7.5,"depth":27.5,"orientation":"South","shape":"Regular","price":395000,"price_per_sqm":1917,"base_monthly_prob":0.1296,"prob_3m":0.3256,"prob_6m":0.5522,"prob_12m":0.7992,"avg_sale_month":4.98,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs","Compact lot, may feel cramped for families","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":69,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4168,"prob_6m":0.6646,"prob_12m":0.877,"avg_sale_month":4.44,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":70,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4046,"prob_6m":0.6474,"prob_12m":0.869,"avg_sale_month":4.5,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":71,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4048,"prob_6m":0.6472,"prob_12m":0.8644,"avg_sale_month":4.49,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":72,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4094,"prob_6m":0.652,"prob_12m":0.8746,"avg_sale_month":4.56,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":73,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4108,"prob_6m":0.6472,"prob_12m":0.8662,"avg_sale_month":4.52,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":76,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4116,"prob_6m":0.6434,"prob_12m":0.8748,"avg_sale_month":4.54,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":77,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.423,"prob_6m":0.6572,"prob_12m":0.8706,"avg_sale_month":4.41,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":78,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.4144,"prob_6m":0.6524,"prob_12m":0.8754,"avg_sale_month":4.53,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":79,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.42,"prob_6m":0.6614,"prob_12m":0.883,"avg_sale_month":4.53,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":80,"stage":2,"type":"Terrace","category":"terrace_entry","size":195,"frontage":7.5,"depth":26,"orientation":"North","shape":"Regular","price":395000,"price_per_sqm":2026,"base_monthly_prob":0.1677,"prob_3m":0.404,"prob_6m":0.6496,"prob_12m":0.8672,"avg_sale_month":4.51,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.55,"Investor":0.3,"Upgrader":0.05,"Downsizer":0.1},"objections":["Very small lot, limited outdoor space","Narrow frontage, limited facade options, terrace-style build required"]},{"lot":56,"stage":2,"type":"Terrace","category":"terrace_mid","size":323,"frontage":11,"depth":27.5,"orientation":"South","shape":"Corner","price":470000,"price_per_sqm":1455,"base_monthly_prob":0.1,"prob_3m":0.2666,"prob_6m":0.4618,"prob_12m":0.7066,"avg_sale_month":5.29,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":61,"stage":2,"type":"Terrace","category":"terrace_mid","size":275,"frontage":10,"depth":27.5,"orientation":"South","shape":"Regular","price":437500,"price_per_sqm":1591,"base_monthly_prob":0.1037,"prob_3m":0.2734,"prob_6m":0.4724,"prob_12m":0.7124,"avg_sale_month":5.19,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":62,"stage":2,"type":"Terrace","category":"terrace_mid","size":275,"frontage":10,"depth":27.5,"orientation":"South","shape":"Regular","price":437500,"price_per_sqm":1591,"base_monthly_prob":0.1037,"prob_3m":0.2758,"prob_6m":0.4704,"prob_12m":0.7078,"avg_sale_month":5.18,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":67,"stage":2,"type":"Terrace","category":"terrace_mid","size":331,"frontage":8.5,"depth":27.5,"orientation":"South","shape":"Corner","price":475000,"price_per_sqm":1435,"base_monthly_prob":0.1,"prob_3m":0.2634,"prob_6m":0.4594,"prob_12m":0.7018,"avg_sale_month":5.27,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs"]},{"lot":68,"stage":2,"type":"Terrace","category":"terrace_mid","size":239,"frontage":9.9,"depth":26,"orientation":"North","shape":"Corner","price":420000,"price_per_sqm":1757,"base_monthly_prob":0.1449,"prob_3m":0.3652,"prob_6m":0.6,"prob_12m":0.8338,"avg_sale_month":4.75,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Compact lot, may feel cramped for families"]},{"lot":74,"stage":2,"type":"Terrace","category":"terrace_mid","size":260,"frontage":10,"depth":26,"orientation":"North","shape":"Regular","price":435000,"price_per_sqm":1673,"base_monthly_prob":0.1342,"prob_3m":0.3434,"prob_6m":0.5612,"prob_12m":0.8032,"avg_sale_month":4.86,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":75,"stage":2,"type":"Terrace","category":"terrace_mid","size":260,"frontage":10,"depth":26,"orientation":"North","shape":"Regular","price":435000,"price_per_sqm":1673,"base_monthly_prob":0.1342,"prob_3m":0.3288,"prob_6m":0.5454,"prob_12m":0.7986,"avg_sale_month":5.05,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":81,"stage":2,"type":"Terrace","category":"terrace_mid","size":299,"frontage":11.5,"depth":26,"orientation":"North","shape":"Regular","price":455000,"price_per_sqm":1522,"base_monthly_prob":0.1198,"prob_3m":0.3084,"prob_6m":0.5266,"prob_12m":0.771,"avg_sale_month":5.04,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":25,"stage":3,"type":"Terrace","category":"terrace_mid","size":380,"frontage":12,"depth":26,"orientation":"North","shape":"Corner","price":540000,"price_per_sqm":1421,"base_monthly_prob":0.1294,"prob_3m":0.3204,"prob_6m":0.5444,"prob_12m":0.7844,"avg_sale_month":5.0,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":[]},{"lot":41,"stage":3,"type":"Terrace","category":"terrace_mid","size":478,"frontage":22,"depth":27.5,"orientation":"South","shape":"Regular","price":610000,"price_per_sqm":1276,"base_monthly_prob":0.0852,"prob_3m":0.2316,"prob_6m":0.407,"prob_12m":0.6452,"avg_sale_month":5.44,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.4,"Investor":0.25,"Upgrader":0.2,"Downsizer":0.15},"objections":["Limited natural light, higher energy costs","Premium pricing, harder to finance for FHBs"]},{"lot":43,"stage":3,"type":"Villa","category":"villa","size":280,"frontage":10,"depth":28,"orientation":"North East","shape":"Regular","price":442500,"price_per_sqm":1580,"base_monthly_prob":0.118,"prob_3m":0.3048,"prob_6m":0.5166,"prob_12m":0.7646,"avg_sale_month":5.1,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.35,"Investor":0.2,"Upgrader":0.35,"Downsizer":0.1},"objections":[]},{"lot":46,"stage":3,"type":"Villa","category":"villa","size":300,"frontage":10,"depth":30,"orientation":"South East","shape":"Regular","price":450000,"price_per_sqm":1500,"base_monthly_prob":0.0846,"prob_3m":0.2322,"prob_6m":0.4042,"prob_12m":0.646,"avg_sale_month":5.46,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.35,"Investor":0.2,"Upgrader":0.35,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs"]},{"lot":48,"stage":3,"type":"Villa","category":"villa","size":300,"frontage":10,"depth":30,"orientation":"South East","shape":"Regular","price":450000,"price_per_sqm":1500,"base_monthly_prob":0.0846,"prob_3m":0.233,"prob_6m":0.4046,"prob_12m":0.6418,"avg_sale_month":5.45,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.35,"Investor":0.2,"Upgrader":0.35,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs"]},{"lot":49,"stage":3,"type":"Villa","category":"villa","size":300,"frontage":10,"depth":30,"orientation":"South East","shape":"Regular","price":450000,"price_per_sqm":1500,"base_monthly_prob":0.0846,"prob_3m":0.2204,"prob_6m":0.402,"prob_12m":0.6506,"avg_sale_month":5.54,"confidence":"Low","risk_flag":true,"buyer_profile":{"FHB":0.35,"Investor":0.2,"Upgrader":0.35,"Downsizer":0.1},"objections":["Limited natural light, higher energy costs"]},{"lot":52,"stage":3,"type":"Villa","category":"villa","size":280,"frontage":10,"depth":28,"orientation":"North East","shape":"Regular","price":442500,"price_per_sqm":1580,"base_monthly_prob":0.118,"prob_3m":0.3118,"prob_6m":0.522,"prob_12m":0.775,"avg_sale_month":5.11,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.35,"Investor":0.2,"Upgrader":0.35,"Downsizer":0.1},"objections":[]},{"lot":53,"stage":3,"type":"Villa","category":"villa","size":280,"frontage":10,"depth":28,"orientation":"North East","shape":"Regular","price":472500,"price_per_sqm":1688,"base_monthly_prob":0.1053,"prob_3m":0.2688,"prob_6m":0.4736,"prob_12m":0.727,"avg_sale_month":5.3,"confidence":"Medium","risk_flag":false,"buyer_profile":{"FHB":0.35,"Investor":0.2,"Upgrader":0.35,"Downsizer":0.1},"objections":[]}]};
+</script>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-logo">P</div>
+        <div class="header-title">
+          <h1>ProjX Intelligence &nbsp;|&nbsp; Oreana — South Ripley</h1>
+          <p>7005 &amp; 7006 Barrams Road, South Ripley QLD 4306 &nbsp;·&nbsp; Hellier McFarland &nbsp;·&nbsp; Ripley Valley PDA</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="header-chip"><strong>Launch:</strong> Jul 2026</div>
+        <div class="header-chip"><strong>Sims:</strong> 5,000 / lot</div>
+        <div class="header-chip"><strong>Model v:</strong> 1.0.0</div>
+        <div class="header-chip"><strong>Generated:</strong> 6 Apr 2026</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+  <!-- ── KPIs ── -->
+  <section class="section">
+    <div class="section-title">Project Overview</div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+  </section>
+
+  <!-- ── Stage Breakdown ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Stage-by-Stage Breakdown</div>
+    <div class="stage-grid" id="stage-grid"></div>
+  </section>
+
+  <!-- ── Charts Row 1 ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Absorption &amp; Buyer Intelligence</div>
+    <div class="charts-row">
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:16px;">📈 Monthly Absorption Forecast — 12 Months</div>
+        <div class="chart-wrap"><canvas id="absorptionChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:16px;">🧑‍🤝‍🧑 Aggregate Buyer Profile</div>
+        <div class="chart-wrap"><canvas id="buyerChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Type Absorption ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Product Type Absorption</div>
+    <div class="charts-row-3" id="type-cards"></div>
+  </section>
+
+  <!-- ── Lot Table ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Lot-by-Lot Analysis</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lot #</th>
+            <th>Stage</th>
+            <th>Type</th>
+            <th>Size m²</th>
+            <th>Price</th>
+            <th>$/m²</th>
+            <th>Orient.</th>
+            <th>Shape</th>
+            <th>Buyer Profile</th>
+            <th>6m Prob</th>
+            <th>12m Prob</th>
+            <th>Confidence</th>
+            <th>Objections</th>
+          </tr>
+        </thead>
+        <tbody id="lot-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Competitor ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Competitor Comparison</div>
+    <div class="comp-row">
+      <div class="comp-card">
+        <div class="comp-title">
+          <span class="comp-dot" style="background:linear-gradient(135deg,var(--accent),var(--accent3))"></span>
+          Oreana — South Ripley (Ours)
+        </div>
+        <div class="comp-metric"><span class="comp-metric-label">Product Range</span><span class="comp-metric-val">Terrace, Villa, Premium Villa</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Price Range</span><span class="comp-metric-val">$395,000 – $707,500</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Avg Price</span><span class="comp-metric-val green">$434,907</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Entry Point</span><span class="comp-metric-val green">$395,000</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">$/m² range</span><span class="comp-metric-val">$1,100 – $2,026</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Proj. Velocity</span><span class="comp-metric-val green">7.5 lots/month</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Freehold</span><span class="comp-metric-val green">✓ Yes — no body corp</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Total Lots</span><span class="comp-metric-val">81</span></div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-title">
+          <span class="comp-dot" style="background:var(--orange)"></span>
+          Stockland Providence — Lacebark Release 5 (Competitor)
+        </div>
+        <div class="comp-metric"><span class="comp-metric-label">Product Range</span><span class="comp-metric-val">Standard residential lots</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Price Range</span><span class="comp-metric-val">$425,900 – $503,900</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Avg Price</span><span class="comp-metric-val yellow">~$464,900</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Entry Point</span><span class="comp-metric-val red">$425,900</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">$/m² range</span><span class="comp-metric-val">$1,358 – $1,484</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Actual Velocity</span><span class="comp-metric-val red">15 lots/month (sell-out)</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Status</span><span class="comp-metric-val yellow">All sold — none settled</span></div>
+        <div class="comp-metric"><span class="comp-metric-label">Lot Sizes</span><span class="comp-metric-val">288–365 m²</span></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:14px;">📊 Pricing Position vs Providence</div>
+      <div class="chart-wrap-sm"><canvas id="compChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ── Risk Register ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">⚠️ Risk Register — Slow-Seller Flags</div>
+    <div id="risk-register"></div>
+  </section>
+
+  <!-- ── Market Inputs ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Market Data Inputs</div>
+    <div class="market-grid">
+      <div class="market-input"><span class="market-input-label">RBA Cash Rate</span><span class="market-input-val">4.10%</span></div>
+      <div class="market-input"><span class="market-input-label">Rate Hike Probability</span><span class="market-input-val">35%</span></div>
+      <div class="market-input"><span class="market-input-label">Avg Mortgage Rate</span><span class="market-input-val">6.20%</span></div>
+      <div class="market-input"><span class="market-input-label">S. Ripley Vacancy Rate</span><span class="market-input-val" style="color:var(--yellow)">4.16%</span></div>
+      <div class="market-input"><span class="market-input-label">Ipswich Land Growth 2026</span><span class="market-input-val" style="color:var(--green)">+51%</span></div>
+      <div class="market-input"><span class="market-input-label">FHB Incentives</span><span class="market-input-val" style="color:var(--green)">Active</span></div>
+      <div class="market-input"><span class="market-input-label">Providence Velocity</span><span class="market-input-val" style="color:var(--orange)">15/month</span></div>
+      <div class="market-input"><span class="market-input-label">PDA Planned Homes</span><span class="market-input-val">48,750</span></div>
+      <div class="market-input"><span class="market-input-label">PDA Population Target</span><span class="market-input-val">131,000</span></div>
+      <div class="market-input"><span class="market-input-label">S. Ripley Median Rent/wk</span><span class="market-input-val">$555</span></div>
+      <div class="market-input"><span class="market-input-label">Rental Yield</span><span class="market-input-val" style="color:var(--yellow)">3.88%</span></div>
+      <div class="market-input"><span class="market-input-label">Distance to Brisbane CBD</span><span class="market-input-val">47km</span></div>
+    </div>
+  </section>
+
+  <!-- ── Methodology ── -->
+  <section class="section" style="padding-top:0">
+    <div class="section-title">Methodology</div>
+    <div class="method-grid">
+      <div class="method-item">
+        <h4>Monte Carlo Engine</h4>
+        <p>5,000 simulations per lot using a monthly hazard-rate survival model. Each simulation perturbs the base monthly sale probability with Gaussian noise (σ=15%), plus a 35% chance of a rate-hike penalty (−8%). Cumulative probabilities computed at 3, 6, and 12 months.</p>
+      </div>
+      <div class="method-item">
+        <h4>Demand Drivers</h4>
+        <p>Base probabilities calibrated to product type (Terrace Entry, Terrace Mid, Villa, Premium Villa). Adjusted for orientation (+12% NE, −15% West), shape (Corner +8%, Irregular −10%), and price sensitivity (−8% above $500k, −18% above $700k).</p>
+      </div>
+      <div class="method-item">
+        <h4>Market Adjustments</h4>
+        <p>FHB incentive boost (+12%) applied to lots under $450k. Elevated vacancy headwind (−5% from 4.16%). Ripley Valley PDA growth tailwind (+7%). Competitor demand crowding from Providence (−3%). Combined net market modifier applied to all lots.</p>
+      </div>
+      <div class="method-item">
+        <h4>Buyer Profiling</h4>
+        <p>Buyer mix (FHB/Investor/Upgrader/Downsizer) assigned by product category, reflecting price point, lot size, and market segment. Aggregate profile weighted by lot price. Useful for targeting marketing spend and incentive design.</p>
+      </div>
+      <div class="method-item">
+        <h4>Risk Flagging</h4>
+        <p>Lots flagged as risk if 6-month sale probability falls below 45% OR price exceeds $600k. Risk reasons categorised as: High price point, Unfavourable attributes (south-facing, irregular), or Below-average absorption probability.</p>
+      </div>
+      <div class="method-item">
+        <h4>Limitations</h4>
+        <p>Model does not account for marketing spend, incentive programs, staged release dynamics, or agent quality. Providence sell-out rate represents the ceiling for demand. Projections are probabilistic — actual results depend on execution, pricing decisions, and macro conditions at launch.</p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+</main>
+
+<footer class="container">
+  <div class="footer">
+    <span>ProjX Intelligence &nbsp;·&nbsp; Oreana South Ripley &nbsp;·&nbsp; Model v1.0.0 &nbsp;·&nbsp; Generated 6 Apr 2026</span>
+    <span>Confidential — Hellier McFarland internal use only</span>
+  </div>
+</footer>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const fmt = (n) => '$' + n.toLocaleString('en-AU');
+const pct = (n) => (n * 100).toFixed(1) + '%';
+const probClass = (p) => p >= 0.6 ? 'high' : p >= 0.45 ? 'med' : 'low';
+const confBadge = (c) => {
+  if (c === 'High') return '<span class="badge badge-high">High</span>';
+  if (c === 'Medium') return '<span class="badge badge-medium">Medium</span>';
+  return '<span class="badge badge-low">Low</span>';
+};
+const typeBadge = (t) => {
+  if (t === 'Premium Villa') return '<span class="badge badge-premium">Premium Villa</span>';
+  if (t === 'Villa') return '<span class="badge badge-villa">Villa</span>';
+  return '<span class="badge badge-terrace">Terrace</span>';
+};
+
+// ── KPI Cards ────────────────────────────────────────────────────────────────
+const kpiData = [
+  { label: 'Total Lots', value: '81', sub: '3 stages', cls: '' },
+  { label: 'Total GRV', value: '$35.2M', sub: 'Gross realisable value', cls: 'green' },
+  { label: 'Avg Price', value: fmt(RESULTS.kpis.avg_price), sub: 'Weighted across all lots', cls: '' },
+  { label: 'Launch Date', value: 'Jul 2026', sub: 'Projected release', cls: '' },
+  { label: 'Proj. Velocity', value: '7.5 / mo', sub: 'Expected lots sold/month', cls: 'green' },
+  { label: 'Exp. Sold 6M', value: RESULTS.kpis.expected_sold_6m + ' lots', sub: '53.9% avg probability', cls: 'yellow' },
+  { label: 'Exp. Sold 12M', value: RESULTS.kpis.expected_sold_12m + ' lots', sub: '77.3% avg probability', cls: 'green' },
+  { label: 'Risk Lots', value: RESULTS.kpis.risk_lot_count, sub: 'Flagged for attention', cls: 'red' },
+  { label: 'Rev. Exp 6M', value: '$18.6M', sub: 'Expected revenue at 6 months', cls: 'green' },
+];
+
+const kpiGrid = document.getElementById('kpi-grid');
+kpiData.forEach(k => {
+  kpiGrid.innerHTML += `
+    <div class="kpi-card ${k.cls}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`;
+});
+
+// ── Stage Grid ───────────────────────────────────────────────────────────────
+const stageGrid = document.getElementById('stage-grid');
+Object.entries(RESULTS.stage_summary).forEach(([name, s]) => {
+  const p6 = s.avg_prob_6m;
+  const p12 = s.avg_prob_12m;
+  stageGrid.innerHTML += `
+    <div class="stage-card">
+      <div class="stage-number">${name}</div>
+      <div class="stage-stat"><span class="stage-stat-label">Lots</span><span class="stage-stat-val">${s.count}</span></div>
+      <div class="stage-stat"><span class="stage-stat-label">Total GRV</span><span class="stage-stat-val">${fmt(s.total_grv)}</span></div>
+      <div class="stage-stat"><span class="stage-stat-label">Avg Price</span><span class="stage-stat-val">${fmt(s.avg_price)}</span></div>
+      <div class="stage-stat"><span class="stage-stat-label">Exp. Sold 6M</span><span class="stage-stat-val">${s.expected_sold_6m} lots</span></div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>6M Avg Probability</span><span class="pct ${probClass(p6)}">${pct(p6)}</span></div>
+        <div class="prob-bar-track"><div class="prob-bar-fill blue" style="width:${p6*100}%"></div></div>
+        <div class="prob-bar-label"><span>12M Avg Probability</span><span class="pct ${probClass(p12)}">${pct(p12)}</span></div>
+        <div class="prob-bar-track"><div class="prob-bar-fill green" style="width:${p12*100}%"></div></div>
+      </div>
+    </div>`;
+});
+
+// ── Type Cards ───────────────────────────────────────────────────────────────
+const typeCards = document.getElementById('type-cards');
+const typeColors = { 'Terrace': 'var(--accent)', 'Villa': 'var(--accent3)', 'Premium Villa': 'var(--accent2)' };
+Object.entries(RESULTS.type_absorption).forEach(([name, t]) => {
+  const col = typeColors[name] || 'var(--accent)';
+  typeCards.innerHTML += `
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:${col};margin-bottom:12px;">${name}</div>
+      <div class="stage-stat"><span class="stage-stat-label">Count</span><span class="stage-stat-val">${t.count} lots</span></div>
+      <div class="stage-stat"><span class="stage-stat-label">Avg Price</span><span class="stage-stat-val">${fmt(t.avg_price)}</span></div>
+      <div class="stage-stat"><span class="stage-stat-label">Exp. Sold 6M</span><span class="stage-stat-val">${t.expected_sold_6m} lots</span></div>
+      <div class="stage-stat"><span class="stage-stat-label">Exp. Sold 12M</span><span class="stage-stat-val">${t.expected_sold_12m} lots</span></div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>6M Avg Prob</span><span class="pct ${probClass(t.avg_prob_6m)}">${pct(t.avg_prob_6m)}</span></div>
+        <div class="prob-bar-track"><div class="prob-bar-fill blue" style="width:${t.avg_prob_6m*100}%"></div></div>
+        <div class="prob-bar-label"><span>12M Avg Prob</span><span class="pct ${probClass(t.avg_prob_12m)}">${pct(t.avg_prob_12m)}</span></div>
+        <div class="prob-bar-track"><div class="prob-bar-fill green" style="width:${t.avg_prob_12m*100}%"></div></div>
+      </div>
+    </div>`;
+});
+
+// ── Lot Table ─────────────────────────────────────────────────────────────────
+const tbody = document.getElementById('lot-table-body');
+const sortedLots = [...RESULTS.lots].sort((a, b) => a.lot - b.lot);
+sortedLots.forEach(l => {
+  const bp = l.buyer_profile;
+  const bpHtml = `
+    <div class="buyer-row">
+      <span class="buyer-pill bp-fhb">FHB ${Math.round(bp.FHB*100)}%</span>
+      <span class="buyer-pill bp-inv">Inv ${Math.round(bp.Investor*100)}%</span>
+      <span class="buyer-pill bp-upg">Upg ${Math.round(bp.Upgrader*100)}%</span>
+      <span class="buyer-pill bp-dsz">Dsz ${Math.round(bp.Downsizer*100)}%</span>
+    </div>`;
+  const objHtml = l.objections.length ? l.objections.map(o => `<span class="obj-tag">${o}</span>`).join('') : '<span style="color:var(--text3);font-size:11px;">None</span>';
+  const riskCls = l.risk_flag ? 'risk-row' : '';
+  tbody.innerHTML += `
+    <tr class="${riskCls}">
+      <td class="primary">${l.risk_flag ? '⚠️ ' : ''}${l.lot}</td>
+      <td>S${l.stage}</td>
+      <td>${typeBadge(l.type)}</td>
+      <td class="primary">${l.size}</td>
+      <td class="primary">${fmt(l.price)}</td>
+      <td>$${l.price_per_sqm.toLocaleString()}</td>
+      <td>${l.orientation}</td>
+      <td>${l.shape}</td>
+      <td>${bpHtml}</td>
+      <td><span class="pct ${probClass(l.prob_6m)}">${pct(l.prob_6m)}</span></td>
+      <td><span class="pct ${probClass(l.prob_12m)}">${pct(l.prob_12m)}</span></td>
+      <td>${confBadge(l.confidence)}</td>
+      <td>${objHtml}</td>
+    </tr>`;
+});
+
+// ── Risk Register ─────────────────────────────────────────────────────────────
+const riskDiv = document.getElementById('risk-register');
+RESULTS.risk_register.forEach(r => {
+  const objHtml = r.objections.length ? r.objections.map(o => `<span class="obj-tag">${o}</span>`).join('') : '';
+  riskDiv.innerHTML += `
+    <div class="risk-item">
+      <div><div class="risk-lot-num">${r.lot}</div><div class="risk-lot-label">LOT</div></div>
+      <div>
+        <div class="risk-detail-title">${r.type} — Stage ${r.stage} — ${r.orientation} — ${r.size}m²</div>
+        <div class="risk-detail-meta">${fmt(r.price)} &nbsp;·&nbsp; ${r.reason}</div>
+        <div style="margin-top:8px;">${objHtml}</div>
+      </div>
+      <div class="risk-prob">
+        <div class="risk-prob-val">${pct(r.prob_6m)}</div>
+        <div class="risk-prob-label">6M Prob</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px;">${pct(r.prob_12m)} 12M</div>
+      </div>
+    </div>`;
+});
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = 'Inter';
+
+// Absorption bar chart
+new Chart(document.getElementById('absorptionChart'), {
+  type: 'bar',
+  data: {
+    labels: RESULTS.monthly_absorption_forecast.map((_, i) => `M${i+1}`),
+    datasets: [{
+      label: 'Expected Lots Sold',
+      data: RESULTS.monthly_absorption_forecast,
+      backgroundColor: RESULTS.monthly_absorption_forecast.map((_, i) =>
+        i < 6 ? 'rgba(99,102,241,0.7)' : 'rgba(99,102,241,0.35)'
+      ),
+      borderColor: RESULTS.monthly_absorption_forecast.map((_, i) =>
+        i < 6 ? 'rgba(99,102,241,1)' : 'rgba(99,102,241,0.5)'
+      ),
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `${ctx.parsed.y.toFixed(1)} lots expected`
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 11 } }, beginAtZero: true }
+    }
+  }
+});
+
+// Buyer pie chart
+const bp = RESULTS.aggregate_buyer_profile;
+new Chart(document.getElementById('buyerChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['FHB', 'Investor', 'Upgrader', 'Downsizer'],
+    datasets: [{
+      data: [bp.FHB*100, bp.Investor*100, bp.Upgrader*100, bp.Downsizer*100],
+      backgroundColor: [
+        'rgba(99,102,241,0.75)',
+        'rgba(6,182,212,0.75)',
+        'rgba(16,185,129,0.75)',
+        'rgba(139,92,246,0.75)',
+      ],
+      borderColor: [
+        'rgba(99,102,241,1)',
+        'rgba(6,182,212,1)',
+        'rgba(16,185,129,1)',
+        'rgba(139,92,246,1)',
+      ],
+      borderWidth: 1.5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { font: { size: 12 }, padding: 16, boxWidth: 12 }
+      },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `${ctx.label}: ${ctx.parsed.toFixed(1)}%`
+        }
+      }
+    }
+  }
+});
+
+// Competitor pricing comparison bar chart
+new Chart(document.getElementById('compChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Entry (Terrace 195-210m²)', 'Mid-Terrace (239-331m²)', 'Villa (280-300m²)', 'Premium Villa (350-598m²)', 'Providence (288-365m²)'],
+    datasets: [
+      {
+        label: 'Oreana',
+        data: [397500, 447500, 455000, 608750, null],
+        backgroundColor: 'rgba(99,102,241,0.7)',
+        borderColor: 'rgba(99,102,241,1)',
+        borderWidth: 1.5,
+        borderRadius: 4,
+      },
+      {
+        label: 'Providence',
+        data: [null, null, null, null, 464900],
+        backgroundColor: 'rgba(249,115,22,0.6)',
+        borderColor: 'rgba(249,115,22,1)',
+        borderWidth: 1.5,
+        borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { font: { size: 12 }, boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ctx.parsed.y ? `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` : ''
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 10 } } },
+      y: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: {
+          font: { size: 11 },
+          callback: (v) => '$' + (v/1000).toFixed(0) + 'k'
+        },
+        beginAtZero: false,
+        min: 350000
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
