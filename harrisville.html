@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harrisville Pastures — Sold Not Settled Report | Feb 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Montserrat', sans-serif; background: #F1F5F9; color: #1A202C; font-size: 13px; }
+
+  .header {
+    background: #0A1628;
+    padding: 28px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left h1 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .header-left p { font-size: 11px; color: #C8A96E; margin-top: 4px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .logo { font-size: 28px; font-weight: 800; color: #C8A96E; letter-spacing: 6px; }
+
+  .meta-bar {
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    padding: 14px 40px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .meta-item { }
+  .meta-label { font-size: 10px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-val { font-size: 13px; font-weight: 700; color: #0A1628; margin-top: 2px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 28px 40px; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+  .kpi { background: #fff; border-radius: 10px; padding: 18px; border: 1px solid #E2E8F0; border-top: 4px solid #C8A96E; }
+  .kpi-label { font-size: 10px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .kpi-value { font-size: 22px; font-weight: 800; color: #0A1628; }
+  .kpi-sub { font-size: 11px; color: #64748B; margin-top: 3px; }
+
+  .section-title {
+    font-size: 14px; font-weight: 700; color: #0A1628;
+    margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 2px solid #C8A96E;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .table-wrap { background: #fff; border-radius: 10px; border: 1px solid #E2E8F0; overflow: hidden; margin-bottom: 28px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+  thead th { background: #0A1628; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid #F1F5F9; vertical-align: middle; }
+  tbody tr:hover td { background: #F8FAFC; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+  .pill-gold { background: #FEF3C7; color: #92400E; }
+  .pill-blue { background: #EFF6FF; color: #1E40AF; }
+  .pill-green { background: #ECFDF5; color: #065F46; }
+  .pill-grey { background: #F1F5F9; color: #475569; }
+
+  .price { font-weight: 700; color: #0A1628; }
+  .psqm { color: #64748B; }
+
+  footer {
+    background: #0A1628; color: #475569;
+    text-align: center; padding: 16px 24px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.3px;
+  }
+
+  @media print {
+    body { background: white; }
+    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    thead th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>Harrisville Pastures — Sold Not Settled Report</h1>
+    <p>Scenic Rim LGA · Harrisville QLD · Period: February 2026</p>
+  </div>
+  <div class="logo">PROJX</div>
+</header>
+
+<div class="meta-bar">
+  <div class="meta-item"><div class="meta-label">Project</div><div class="meta-val">Harrisville Pastures</div></div>
+  <div class="meta-item"><div class="meta-label">Suburb</div><div class="meta-val">Harrisville, QLD</div></div>
+  <div class="meta-item"><div class="meta-label">LGA</div><div class="meta-val">Scenic Rim</div></div>
+  <div class="meta-item"><div class="meta-label">Report Period</div><div class="meta-val">February 2026</div></div>
+  <div class="meta-item"><div class="meta-label">Status</div><div class="meta-val">Sold — Not Settled</div></div>
+  <div class="meta-item"><div class="meta-label">Data Source</div><div class="meta-val">Terralytics</div></div>
+  <div class="meta-item"><div class="meta-label">Prepared By</div><div class="meta-val">ProjX Australia</div></div>
+</div>
+
+<div class="container">
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Total Lots Sold</div>
+      <div class="kpi-value">25</div>
+      <div class="kpi-sub">Not yet settled</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Price Range</div>
+      <div class="kpi-value">$375K–$640K</div>
+      <div class="kpi-sub">Excl. anomaly ($145K)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg $/sqm</div>
+      <div class="kpi-value">~$175</div>
+      <div class="kpi-sub">Across all lots</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Stages Active</div>
+      <div class="kpi-value">1–5</div>
+      <div class="kpi-sub">Multiple stages</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Lot Types</div>
+      <div class="kpi-value">Reg + Cnr</div>
+      <div class="kpi-sub">Regular & Corner lots</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="section-title">📋 Sold Not Settled — Lot Register</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Lot No.</th>
+          <th>Stage</th>
+          <th>Type</th>
+          <th>Area (m²)</th>
+          <th>Frontage</th>
+          <th>Price</th>
+          <th>$/sqm</th>
+          <th>Release Month</th>
+          <th>Sold Month</th>
+          <th>Period (mo)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>3090</td><td>2</td><td><span class="pill pill-blue">Reg</span></td><td>~880m²</td><td>19.7m</td><td class="price">$445,000</td><td class="psqm">$506</td><td>Mar 2025</td><td>Feb 2026</td><td>11</td></tr>
+        <tr><td>2</td><td>3014</td><td>1</td><td><span class="pill pill-grey">—</span></td><td>~1,530m²</td><td>15.3m</td><td class="price">$430,000</td><td class="psqm">$281</td><td>Dec 2025</td><td>Dec 2025</td><td>1</td></tr>
+        <tr><td>3</td><td>3003</td><td>1</td><td><span class="pill pill-blue">Reg</span></td><td>~2,050m²</td><td>20.5m</td><td class="price">$400,000</td><td class="psqm">$195</td><td>Dec 2025</td><td>Feb 2026</td><td>2</td></tr>
+        <tr><td>4</td><td>3002</td><td>1</td><td><span class="pill pill-grey">—</span></td><td>~1,240m²</td><td>18.6m</td><td class="price">$395,000</td><td class="psqm">$319</td><td>Dec 2025</td><td>Feb 2026</td><td>2</td></tr>
+        <tr><td>5</td><td>3009</td><td>4</td><td><span class="pill pill-grey">—</span></td><td>~2,240m²</td><td>22.4m</td><td class="price">$375,000</td><td class="psqm">$167</td><td>Dec 2025</td><td>Jan 2026</td><td>2</td></tr>
+        <tr><td>6</td><td>3008</td><td>4</td><td><span class="pill pill-blue">Reg</span></td><td>~2,030m²</td><td>20.3m</td><td class="price">$375,000</td><td class="psqm">$185</td><td>Dec 2025</td><td>Jan 2026</td><td>2</td></tr>
+        <tr><td>7</td><td>3004</td><td>4</td><td><span class="pill pill-grey">—</span></td><td>~3,180m²</td><td>31.8m</td><td class="price">$375,000</td><td class="psqm">$118</td><td>Dec 2025</td><td>Jan 2026</td><td>2</td></tr>
+        <tr><td>8</td><td>3049</td><td>4</td><td><span class="pill pill-grey">—</span></td><td>~2,130m²</td><td>21.3m</td><td class="price">$375,000</td><td class="psqm">$176</td><td>Dec 2025</td><td>Jan 2026</td><td>1</td></tr>
+        <tr><td>9</td><td>3048</td><td>4</td><td><span class="pill pill-gold">Cor</span></td><td>~1,740m²</td><td>17.4m</td><td class="price">$371,000</td><td class="psqm">$213</td><td>Aug 2025</td><td>Jan 2026</td><td>5</td></tr>
+        <tr><td>10</td><td>4783</td><td>5</td><td><span class="pill pill-grey">—</span></td><td>~5,430m²</td><td>81.7m</td><td class="price">$640,000</td><td class="psqm">$118</td><td>—</td><td>Jan 2025</td><td>4</td></tr>
+        <tr><td>11</td><td>3236</td><td>—</td><td><span class="pill pill-blue">Reg</span></td><td>~2,360m²</td><td>23.6m</td><td class="price">$467,000</td><td class="psqm">$198</td><td>Oct 2025</td><td>Jan 2026</td><td>3</td></tr>
+        <tr><td>12</td><td>3234</td><td>3</td><td><span class="pill pill-grey">—</span></td><td>~2,660m²</td><td>48.1m</td><td class="price">$455,000</td><td class="psqm">$171</td><td>Oct 2025</td><td>Jan 2026</td><td>3</td></tr>
+        <tr><td>13</td><td>3094</td><td>3</td><td><span class="pill pill-grey">—</span></td><td>~2,880m²</td><td>16.4m</td><td class="price">$410,000</td><td class="psqm">$142</td><td>Jun 2025</td><td>Nov 2025</td><td>5</td></tr>
+        <tr><td>14</td><td>—</td><td>3</td><td><span class="pill pill-grey">—</span></td><td>~2,780m²</td><td>18.4m</td><td class="price">$395,000</td><td class="psqm">$142</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>15</td><td>3633</td><td>3</td><td><span class="pill pill-grey">—</span></td><td>~2,730m²</td><td>27.4m</td><td class="price">$445,000</td><td class="psqm">$163</td><td>Jun 2025</td><td>Oct 2025</td><td>4</td></tr>
+        <tr><td>16</td><td>3632</td><td>3</td><td><span class="pill pill-grey">—</span></td><td>~2,240m²</td><td>10.1m</td><td class="price">$440,000</td><td class="psqm">$196</td><td>Jun 2025</td><td>Oct 2025</td><td>4</td></tr>
+        <tr><td>17</td><td>—</td><td>—</td><td><span class="pill pill-grey">—</span></td><td>—</td><td>—</td><td class="price">$395,000</td><td class="psqm">—</td><td>Jun 2025</td><td>Oct 2025</td><td>4</td></tr>
+        <tr><td>18</td><td>3247</td><td>1</td><td><span class="pill pill-grey">—</span></td><td>~3,140m²</td><td>40.6m</td><td class="price">$559,000</td><td class="psqm">$178</td><td>Feb 2025</td><td>Sep 2025</td><td>7</td></tr>
+        <tr><td>19</td><td>3645</td><td>1</td><td><span class="pill pill-gold">Cor</span></td><td>~2,590m²</td><td>60.5m</td><td class="price">$510,000</td><td class="psqm">$197</td><td>Mar 2025</td><td>Oct 2025</td><td>7</td></tr>
+        <tr><td>20</td><td>3730</td><td>2</td><td><span class="pill pill-grey">—</span></td><td>~2,780m²</td><td>75.3m</td><td class="price">$540,000</td><td class="psqm">$194</td><td>Apr 2025</td><td>Oct 2025</td><td>6</td></tr>
+        <tr><td>21</td><td>3016</td><td>2</td><td><span class="pill pill-blue">Reg</span></td><td>~2,060m²</td><td>14.8m</td><td class="price">$400,000</td><td class="psqm">$194</td><td>Mar 2025</td><td>Oct 2025</td><td>7</td></tr>
+        <tr><td>22</td><td>3080</td><td>3</td><td><span class="pill pill-blue">Reg</span></td><td>~2,270m²</td><td>37.8m</td><td class="price">$410,000</td><td class="psqm">$181</td><td>Aug 2025</td><td>—</td><td>—</td></tr>
+        <tr><td>23</td><td>3092</td><td>1</td><td><span class="pill pill-blue">Reg</span></td><td>~1,340m²</td><td>27.2m</td><td class="price">$145,000</td><td class="psqm">$108</td><td>Aug 2025</td><td>—</td><td>—</td></tr>
+        <tr><td>24</td><td>3243</td><td>—</td><td><span class="pill pill-grey">—</span></td><td>~6,090m²</td><td>68.4m</td><td class="price">$610,000</td><td class="psqm">$100</td><td>Aug 2025</td><td>Nov 2025</td><td>3</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Disclaimer -->
+  <div style="background:#FEF3C7;border-left:4px solid #C8A96E;border-radius:6px;padding:12px 16px;font-size:11px;color:#78350F;margin-bottom:28px">
+    <strong>Data Note:</strong> Source data extracted from Terralytics (February 2026). Some lot numbers and parcel IDs may be incomplete due to subscription limitations. Area calculations are indicative based on available frontage data. Lot 3092 ($145,000) appears anomalous — recommend verification before use. Prepared by ProjX Australia for internal use only.
+  </div>
+
+</div>
+
+<footer>
+  Prepared by ProjX Australia &nbsp;|&nbsp; projxaustralia.com.au &nbsp;|&nbsp; Confidential — Internal Use Only &nbsp;|&nbsp; Data: Terralytics Feb 2026
+</footer>
+
+</body>
+</html>
