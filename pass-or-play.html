@@ -6,6 +6,8 @@
   <title>Mandate Qualifier — ProjX Australia</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -113,6 +115,7 @@
       border-color: var(--ink);
     }
     .btn-primary:hover { background: var(--ink2); }
+    .btn-primary.loading { opacity: 0.65; pointer-events: none; }
 
     /* ─── PAGE TITLE BAR — REMOVED ────────────── */
 
@@ -464,7 +467,7 @@
   </div>
   <div class="header-actions">
     <button class="btn btn-outline" onclick="resetAll()">Reset</button>
-    <button class="btn btn-primary" onclick="window.print()">Export PDF</button>
+    <button class="btn btn-primary" id="pdf-btn" onclick="exportPDF()">Export PDF</button>
   </div>
 </header>
 
@@ -771,6 +774,50 @@ function resetAll() {
 buildSliders("attr-sliders",ATTR_CRITERIA,attrValues,"attr");
 buildSliders("win-sliders",WIN_CRITERIA,winValues,"win");
 drawDial(50); update();
+
+async function exportPDF() {
+  const btn = document.getElementById("pdf-btn");
+  btn.textContent = "Generating...";
+  btn.classList.add("loading");
+  try {
+    const sidebar = document.querySelector(".sidebar");
+    const leftCol = document.querySelector(".left-col");
+    const oppName = document.getElementById("opp-name").value || "Mandate Qualifier";
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pageW = 210, margin = 12;
+    // Capture sidebar (score + result)
+    const sideCanvas = await html2canvas(sidebar, { scale: 2, useCORS: true, backgroundColor: "#F4F6F8" });
+    const leftCanvas = await html2canvas(leftCol, { scale: 2, useCORS: true, backgroundColor: "#F4F6F8" });
+    // Title
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(18);
+    pdf.setTextColor(0, 30, 46);
+    pdf.text("Mandate Qualifier", margin, 18);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.setTextColor(107, 132, 151);
+    pdf.text(oppName !== "Mandate Qualifier" ? oppName : "ProjX Australia", margin, 25);
+    // Sidebar
+    const sideW = (pageW / 2) - margin - 4;
+    const sideH = (sideCanvas.height / sideCanvas.width) * sideW;
+    pdf.addImage(sideCanvas.toDataURL("image/png"), "PNG", margin, 32, sideW, sideH);
+    // Left col
+    const leftW = (pageW / 2) - margin - 4;
+    const leftH = (leftCanvas.height / leftCanvas.width) * leftW;
+    pdf.addImage(leftCanvas.toDataURL("image/png"), "PNG", pageW / 2 + 2, 32, leftW, Math.min(leftH, 240));
+    // Footer
+    pdf.setFontSize(8);
+    pdf.setTextColor(180, 180, 180);
+    pdf.text("ProjX Australia — Mandate Qualifier", margin, 290);
+    pdf.save(`Mandate-Qualifier${oppName !== "Mandate Qualifier" ? "-" + oppName.replace(/[^a-z0-9]/gi, "-") : ""}.pdf`);
+  } catch(e) {
+    alert("PDF export failed. Try screenshotting instead.");
+    console.error(e);
+  }
+  btn.textContent = "Export PDF";
+  btn.classList.remove("loading");
+}
 </script>
 </body>
 </html>
