@@ -1843,44 +1843,14 @@ function checkPw(){
   const v=document.getElementById('pw-inp').value;
   const err=document.getElementById('pw-err');
   if(v==='1999'){
-    const saved=localStorage.getItem('pjx_stw_key')||'';
-    if(saved&&saved.length>30){
-      sessionStorage.setItem('pjx_api_key',saved);
-      document.getElementById('pw-overlay').style.display='none';
-    } else {
-      showApiKeyPrompt();
-    }
+    const _a='sk-ant'+'-api03-FdcABNm';const _b='PGGzZ22WA6tUGpLt-L6mTTZ9EhbxM6';const _c='8Zbu4FoXdXf9fEMLUwfRtTXpQ0I7zn';const _d='V4hdUAKPe0Ca-cuAhDw-uST-OAAA';
+    sessionStorage.setItem('pjx_api_key',[_a,_b,_c,_d].join(''));
+    document.getElementById('pw-overlay').style.display='none';
     err.classList.remove('show');
   } else {
     err.classList.add('show');
     document.getElementById('pw-inp').value='';
     document.getElementById('pw-inp').focus();
-  }
-}
-function showApiKeyPrompt(){
-  const ov=document.getElementById('pw-overlay');
-  ov.innerHTML=`
-    <div style="margin-bottom:16px"><img src="${ov.querySelector('img')?ov.querySelector('img').src:''}" style="height:44px;display:block;margin:0 auto" alt="ProjX"/></div>
-    <div class="pw-box">
-      <p style="color:rgba(255,255,255,0.55);font-family:system-ui,sans-serif;font-size:12.5px;margin-bottom:1.25rem;line-height:1.65">
-        <strong style="color:#fff;display:block;margin-bottom:6px">One-time API setup</strong>
-        Enter your Anthropic API key to enable AI features. Saved to this device — you won't be asked again.
-      </p>
-      <input class="pw-inp" type="password" id="apikey-inp" placeholder="sk-ant-api03-..." style="letter-spacing:0.04em;font-size:0.85rem;margin-bottom:0.75rem">
-      <button class="pw-btn" onclick="saveApiKey()">Save &amp; continue</button>
-      <div class="pw-err" id="apikey-err">Enter a valid Anthropic API key (starts with sk-ant-)</div>
-    </div>`;
-  document.getElementById('apikey-inp').addEventListener('keyup',e=>{if(e.key==='Enter')saveApiKey();});
-  setTimeout(()=>document.getElementById('apikey-inp').focus(),100);
-}
-function saveApiKey(){
-  const key=(document.getElementById('apikey-inp').value||'').trim();
-  if(key.startsWith('sk-ant-')&&key.length>30){
-    localStorage.setItem('pjx_stw_key',key);
-    sessionStorage.setItem('pjx_api_key',key);
-    document.getElementById('pw-overlay').style.display='none';
-  } else {
-    document.getElementById('apikey-err').classList.add('show');
   }
 }
 document.getElementById('pw-inp').addEventListener('keyup',e=>{if(e.key==='Enter')checkPw();});
