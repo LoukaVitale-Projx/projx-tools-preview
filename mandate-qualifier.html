@@ -412,14 +412,116 @@
       margin-bottom: 3px;
     }
 
+    /* ─── PRINT STYLES ─────────────────────────── */
     @media print {
-      body { background: #fff !important; }
-      .header { position: static; }
-      .header-actions, .page-bar { display: none; }
-      .main { display: block !important; padding: 16px !important; }
-      .sidebar { position: static !important; }
-      input[type=range] { display: none; }
+      @page { size: A4 portrait; margin: 16mm 14mm 14mm 14mm; }
+
+      *, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body { background: #fff !important; font-size: 11px; }
+
+      /* hide screen-only elements */
+      .header-actions,
+      .criteria-labels,
+      input[type=range],
+      #radar-canvas,
+      .dial-wrap { display: none !important; }
+
+      /* header: static, minimal */
+      .header {
+        position: static !important;
+        box-shadow: none !important;
+        border-bottom: 2px solid #001E2E !important;
+        height: auto !important;
+        padding: 8px 0 10px !important;
+        margin-bottom: 14px;
+      }
+
+      /* print-only header row (logo + title + meta) */
+      .print-header { display: flex !important; }
+
+      /* main: single column, no gaps */
+      .main {
+        display: block !important;
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+
+      /* sidebar: inline before left-col in print */
+      .sidebar {
+        position: static !important;
+        width: 100% !important;
+        margin-bottom: 10px;
+      }
+
+      /* score summary: two-column grid in print */
+      .print-score-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      /* criteria rows: compact */
+      .criteria-item {
+        padding: 6px 0 !important;
+        gap: 4px !important;
+      }
+      .criteria-top {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      .criteria-name { font-size: 10px !important; }
+      .criteria-value { font-size: 13px !important; font-weight: 700 !important; }
+      .section-divider { margin: 2px 0 !important; }
+
+      /* cards: no shadows, tighter */
+      .card {
+        box-shadow: none !important;
+        border: 1px solid #D4DCE2 !important;
+        margin-bottom: 8px !important;
+        break-inside: avoid;
+      }
+      .card-header { padding: 8px 14px !important; }
+      .card-body   { padding: 10px 14px !important; }
+
+      /* score pill */
+      .card-score-pill { padding: 3px 8px !important; }
+      .card-score-num  { font-size: 16px !important; }
+
+      /* result badge */
+      .result-badge { font-size: 13px !important; padding: 4px 12px !important; margin: 6px 0 4px !important; }
+      .result-desc  { font-size: 10px !important; }
+
+      /* split scores */
+      .split-scores { gap: 16px !important; margin: 8px 0 !important; }
+      .split-num    { font-size: 22px !important; }
+
+      /* action list */
+      .action-list li { padding: 3px 0 !important; font-size: 10px !important; }
+
+      /* breakdown bars */
+      .breakdown-row { margin-bottom: 8px !important; }
+
+      /* footer */
+      .print-footer {
+        display: block !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 8px;
+        color: #B0B8C1;
+        border-top: 1px solid #EBF0F3;
+        padding: 4px 0;
+        background: #fff;
+      }
     }
+
+    /* hide print-only elements on screen */
+    .print-header, .print-footer { display: none; }
 
     @media (max-width: 960px) {
       .main { grid-template-columns: 1fr; }
@@ -453,6 +555,9 @@
 </head>
 <body>
 
+<!-- PRINT FOOTER -->
+<div class="print-footer">ProjX Australia — Mandate Qualifier — Confidential</div>
+
 <!-- HEADER -->
 <header class="header">
   <div class="header-left">
@@ -464,6 +569,11 @@
       <div class="header-tool-name">Mandate Qualifier</div>
       <div class="header-tool-sub">Pursuit Intelligence</div>
     </div>
+  </div>
+  <!-- Print-only meta -->
+  <div class="print-header" style="margin-left:auto; flex-direction:column; align-items:flex-end; gap:2px;">
+    <div id="print-opp" style="font-weight:700; font-size:13px; color:#001E2E;"></div>
+    <div id="print-date" style="font-size:9px; color:#6B8497; letter-spacing:0.06em;"></div>
   </div>
   <div class="header-actions">
     <button class="btn btn-outline" onclick="resetAll()">Reset</button>
@@ -775,48 +885,14 @@ buildSliders("attr-sliders",ATTR_CRITERIA,attrValues,"attr");
 buildSliders("win-sliders",WIN_CRITERIA,winValues,"win");
 drawDial(50); update();
 
-async function exportPDF() {
-  const btn = document.getElementById("pdf-btn");
-  btn.textContent = "Generating...";
-  btn.classList.add("loading");
-  try {
-    const sidebar = document.querySelector(".sidebar");
-    const leftCol = document.querySelector(".left-col");
-    const oppName = document.getElementById("opp-name").value || "Mandate Qualifier";
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-    const pageW = 210, margin = 12;
-    // Capture sidebar (score + result)
-    const sideCanvas = await html2canvas(sidebar, { scale: 2, useCORS: true, backgroundColor: "#F4F6F8" });
-    const leftCanvas = await html2canvas(leftCol, { scale: 2, useCORS: true, backgroundColor: "#F4F6F8" });
-    // Title
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(18);
-    pdf.setTextColor(0, 30, 46);
-    pdf.text("Mandate Qualifier", margin, 18);
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(10);
-    pdf.setTextColor(107, 132, 151);
-    pdf.text(oppName !== "Mandate Qualifier" ? oppName : "ProjX Australia", margin, 25);
-    // Sidebar
-    const sideW = (pageW / 2) - margin - 4;
-    const sideH = (sideCanvas.height / sideCanvas.width) * sideW;
-    pdf.addImage(sideCanvas.toDataURL("image/png"), "PNG", margin, 32, sideW, sideH);
-    // Left col
-    const leftW = (pageW / 2) - margin - 4;
-    const leftH = (leftCanvas.height / leftCanvas.width) * leftW;
-    pdf.addImage(leftCanvas.toDataURL("image/png"), "PNG", pageW / 2 + 2, 32, leftW, Math.min(leftH, 240));
-    // Footer
-    pdf.setFontSize(8);
-    pdf.setTextColor(180, 180, 180);
-    pdf.text("ProjX Australia — Mandate Qualifier", margin, 290);
-    pdf.save(`Mandate-Qualifier${oppName !== "Mandate Qualifier" ? "-" + oppName.replace(/[^a-z0-9]/gi, "-") : ""}.pdf`);
-  } catch(e) {
-    alert("PDF export failed. Try screenshotting instead.");
-    console.error(e);
-  }
-  btn.textContent = "Export PDF";
-  btn.classList.remove("loading");
+function exportPDF() {
+  // Inject print date and opportunity into the print header
+  const oppName = document.getElementById("opp-name").value.trim();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-AU", { day:"numeric", month:"long", year:"numeric" });
+  document.getElementById("print-opp").textContent = oppName || "ProjX Australia";
+  document.getElementById("print-date").textContent = "Prepared " + dateStr;
+  window.print();
 }
 </script>
 </body>
