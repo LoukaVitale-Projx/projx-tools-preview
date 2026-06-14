@@ -4,261 +4,1872 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Strategy to Win — ProjX Australia</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root { --dark:#001E2E; --light:#CBD2D8; --white:#FFFFFF; --bg:#F0F2F4; --border:#D8DADE; }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
-.header{background:var(--dark);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;}
-.logo-brand{color:var(--white);font-size:20px;font-weight:800;letter-spacing:4px;text-transform:uppercase;}
-.logo-tagline{color:var(--light);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
-.header-title{color:rgba(255,255,255,.5);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;}
-.container{max-width:1120px;margin:0 auto;padding:32px 24px;}
-.page-title{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:6px;}
-.page-sub{font-size:12px;color:rgba(0,30,46,.45);margin-bottom:32px;}
-.selector-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:28px;}
-.selector-card{background:var(--white);border-radius:8px;border:1px solid var(--border);overflow:hidden;}
-.sel-hdr{background:var(--dark);padding:14px 18px;}
-.sel-step{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--light);text-transform:uppercase;margin-bottom:3px;}
-.sel-title{font-size:13px;font-weight:700;color:var(--white);}
-.sel-body{padding:4px 0;}
-.opt{display:flex;align-items:center;padding:8px 18px;cursor:pointer;gap:10px;border-bottom:1px solid var(--bg);transition:background .12s;}
-.opt:last-child{border-bottom:none;}
-.opt:hover{background:#F7F8F9;}
-.opt.sel{background:rgba(0,30,46,.05);}
-.chk{width:16px;height:16px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;}
-.opt.sel .chk{background:var(--dark);border-color:var(--dark);}
-.opt.sel .chk::after{content:'✓';color:#fff;font-size:10px;font-weight:800;}
-.opt-txt{font-size:12px;font-weight:500;color:var(--dark);line-height:1.35;}
-.opt-limit{font-size:10px;color:rgba(0,30,46,.35);padding:6px 18px 12px;font-style:italic;}
-.gen-wrap{text-align:center;margin-bottom:32px;}
-.btn-gen{background:var(--dark);color:var(--white);border:none;padding:14px 52px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:opacity .2s;}
-.btn-gen:hover{opacity:.85;}
-.btn-gen:disabled{opacity:.35;cursor:not-allowed;}
-.results{display:none;}
-.results.visible{display:block;}
-.res-hdr{background:var(--dark);border-radius:8px 8px 0 0;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;}
-.res-title{color:var(--white);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-.res-badge{background:rgba(255,255,255,.12);color:var(--light);font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 14px;border-radius:20px;text-transform:uppercase;}
-.res-body{background:var(--white);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:28px 24px;}
-.opening{background:rgba(0,30,46,.04);border-left:3px solid var(--dark);border-radius:0 6px 6px 0;padding:18px 22px;margin-bottom:24px;}
-.open-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(0,30,46,.4);margin-bottom:8px;}
-.open-txt{font-size:14px;font-weight:600;color:var(--dark);line-height:1.65;font-style:italic;}
-.strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
-.s-card{border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.s-card-hdr{background:var(--bg);padding:9px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(0,30,46,.4);}
-.s-card-body{padding:14px 16px;}
-.s-angle{font-size:16px;font-weight:800;color:var(--dark);margin-bottom:6px;}
-.s-desc{font-size:12px;color:rgba(0,30,46,.55);line-height:1.55;}
-.trigger-pill{display:inline-block;background:var(--dark);color:var(--white);font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 18px;border-radius:20px;margin-bottom:8px;}
-.proof-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(0,30,46,.4);margin-bottom:12px;}
-.proof-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;}
-.proof-item{background:var(--bg);border-radius:6px;padding:14px 16px;}
-.proof-num{font-size:20px;font-weight:800;color:var(--dark);opacity:.12;margin-bottom:4px;}
-.proof-text{font-size:12px;color:var(--dark);line-height:1.55;font-weight:500;}
-.btn-reset{background:none;border:1px solid var(--border);color:rgba(0,30,46,.45);padding:10px 24px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;}
-.btn-reset:hover{border-color:var(--dark);color:var(--dark);}
-footer{background:var(--dark);color:rgba(255,255,255,.25);font-size:10px;text-align:center;padding:14px;margin-top:48px;}
-@media(max-width:768px){
-  .selector-grid{grid-template-columns:1fr;}
-  .strategy-grid{grid-template-columns:1fr;}
-  .proof-grid{grid-template-columns:1fr;}
-  .header{flex-direction:column;gap:8px;text-align:center;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --charcoal:#001E2E;--brown:#2D6A8F;--green:#A2A092;
+  --bg:#F5F4F1;--surface:#FFFFFF;--border:#E0DDD8;
+  --text:#1C1B18;--muted:#6B6860;--light:#F0EEE9;
+  --what:#5A4A8A;--what-light:#F0EDF8;--what-border:#C8C0E8;
+  --how:#2E6B5A;--how-light:#EBF5F1;--how-border:#A8D0C4;
+  --why:#8A4A2A;--why-light:#F8F0EB;--why-border:#E0C0A8;
+  --upload:#1A5276;--upload-light:#EAF2F8;--upload-border:#AED6F1;
+  --ai-accent:#2E4057;
+}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+.topbar{background:var(--charcoal);padding:0 2rem;height:54px;display:flex;align-items:center;justify-content:space-between}
+.logo-text{color:#fff;font-size:20px;font-weight:700;letter-spacing:-0.5px;font-family:Georgia,serif}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block;margin-left:2px}
+.logo-sub{color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;font-family:system-ui,sans-serif}
+
+/* PASSWORD OVERLAY */
+#pw-overlay{position:fixed;inset:0;background:var(--charcoal);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+.pw-logo{font-family:Georgia,serif;font-size:2rem;color:#fff;font-weight:700;letter-spacing:-1px}
+.pw-logo span{width:11px;height:11px;border-radius:50%;background:var(--green);display:inline-block;margin-left:3px;vertical-align:middle}
+.pw-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:2rem;width:320px;text-align:center}
+.pw-box p{color:rgba(255,255,255,0.55);font-size:12.5px;font-family:system-ui,sans-serif;margin-bottom:1.25rem;line-height:1.6}
+.pw-inp{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:#fff;font-size:1.4rem;padding:10px 14px;outline:none;font-family:Georgia,serif;letter-spacing:0.3em;text-align:center;margin-bottom:0.75rem}
+.pw-inp:focus{border-color:var(--brown)}
+.pw-btn{width:100%;padding:11px;background:var(--brown);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:system-ui,sans-serif;transition:all 0.2s}
+.pw-btn:hover{background:#7A6E62}
+.pw-err{color:#E88;font-size:12px;font-family:system-ui,sans-serif;display:none;margin-top:4px}
+.pw-err.show{display:block}
+.confidential-footer{background:var(--charcoal);border-top:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;text-align:center;font-size:10.5px;color:rgba(255,255,255,0.35);font-family:system-ui,sans-serif;line-height:1.7}
+.hero{background:var(--charcoal);padding:1.75rem 2rem 2rem;border-bottom:3px solid var(--brown)}
+.hero-inner,.tabs-wrap-inner,.wrap-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--brown);color:#fff;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:3px;margin-bottom:0.6rem;font-family:system-ui,sans-serif}
+.hero h1{color:#fff;font-size:1.35rem;font-weight:600;margin-bottom:0.5rem}
+.hero p{color:rgba(255,255,255,0.6);font-size:13px;line-height:1.65;max-width:680px;font-family:system-ui,sans-serif}
+.pbar{background:var(--charcoal);border-bottom:1px solid rgba(255,255,255,0.1);padding:0.6rem 2rem}
+.pbar-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pbar-inner label{color:rgba(255,255,255,0.5);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;font-family:system-ui,sans-serif}
+.pbar-inner input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:5px;color:#fff;font-size:13px;padding:5px 10px;outline:none;font-family:system-ui,sans-serif}
+.pbar-inner input:focus{border-color:var(--brown)}
+.pbar-inner input::placeholder{color:rgba(255,255,255,0.3)}
+#inp-project{width:240px}#inp-client{width:200px}#inp-date{width:140px}
+.tabs-wrap{padding:1.5rem 2rem 0}
+.tabs{display:flex;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.tab-btn{padding:0.65rem 1.25rem;font-size:13px;font-weight:500;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;font-family:system-ui,sans-serif;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--charcoal);border-bottom-color:var(--brown);font-weight:600}
+.tab-num{width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--muted);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:system-ui,sans-serif}
+.tab-btn.active .tab-num{background:var(--brown);color:#fff}
+.wrap{padding:1.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.intro{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:12.5px;color:var(--muted);line-height:1.6;font-family:system-ui,sans-serif}
+.intro strong{color:var(--text)}
+
+/* ===== TAB 0: UPLOAD PORTAL ===== */
+.upload-hero{background:linear-gradient(135deg,var(--upload) 0%,#2C3E50 100%);border-radius:12px;padding:2rem;margin-bottom:1.25rem;color:#fff}
+.upload-hero h2{font-size:1.2rem;font-weight:600;margin-bottom:0.4rem}
+.upload-hero p{font-size:12.5px;opacity:0.75;line-height:1.6;font-family:system-ui,sans-serif;max-width:600px}
+.upload-zone-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+.upload-zone{border:2px dashed var(--upload-border);border-radius:10px;background:var(--upload-light);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
+.upload-zone:hover,.upload-zone.dragover{background:#D6EAF8;border-color:var(--upload)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:2rem;margin-bottom:0.5rem}
+.upload-zone h3{font-size:13px;font-weight:600;color:var(--upload);margin-bottom:4px}
+.upload-zone p{font-size:11.5px;color:var(--muted);font-family:system-ui,sans-serif}
+.file-list{margin-top:0.75rem;text-align:left}
+.file-item{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text);padding:4px 8px;background:rgba(255,255,255,0.7);border-radius:4px;margin-top:4px;font-family:system-ui,sans-serif}
+.file-item-icon{color:var(--upload);font-size:14px}
+.file-item-remove{margin-left:auto;color:#C0392B;cursor:pointer;font-size:14px;line-height:1}
+.comp-url-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
+.comp-url-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:0.85rem;font-family:system-ui,sans-serif}
+.comp-url-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1rem}
+.comp-url-cell{display:flex;flex-direction:column;gap:6px}
+.comp-url-label{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-family:system-ui,sans-serif}
+.comp-url-inp{width:100%;font-size:12.5px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);outline:none;font-family:system-ui,sans-serif;transition:border-color 0.15s}
+.comp-url-inp:focus{border-color:var(--brown);background:var(--surface)}
+.comp-url-inp::placeholder{color:#C0BCB6}
+.ai-analyse-btn{padding:9px 22px;background:var(--ai-accent);color:#fff;border:none;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:system-ui,sans-serif;display:flex;align-items:center;gap:8px;transition:all 0.2s}
+.ai-analyse-btn:hover{background:#1A2C40}
+.ai-analyse-btn:disabled{opacity:0.5;cursor:not-allowed}
+.ai-panel{background:var(--surface);border:1.5px solid var(--upload-border);border-radius:10px;overflow:hidden;margin-bottom:1.25rem;display:none}
+.ai-panel.show{display:block}
+.ai-panel-hd{background:var(--upload);padding:0.75rem 1rem;display:flex;align-items:center;gap:10px}
+.ai-panel-hd-icon{font-size:1.2rem}
+.ai-panel-hd-text{color:#fff;font-size:13px;font-weight:600}
+.ai-panel-hd-sub{color:rgba(255,255,255,0.65);font-size:11px;font-family:system-ui,sans-serif}
+.ai-panel-body{padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.ai-extract-card{background:var(--upload-light);border:1px solid var(--upload-border);border-radius:8px;padding:1rem}
+.ai-extract-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--upload);margin-bottom:0.5rem;font-family:system-ui,sans-serif}
+.ai-extract-body{font-size:12.5px;color:var(--text);line-height:1.6;font-family:system-ui,sans-serif}
+.ai-extract-body ul{padding-left:1.2rem;margin-top:0.25rem}
+.ai-extract-body li{margin-bottom:3px}
+.comp-intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.comp-intel-card{background:#FDF8F5;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.comp-intel-hd{padding:0.6rem 0.85rem;background:var(--charcoal)}
+.comp-intel-name{color:#fff;font-size:12px;font-weight:600}
+.comp-intel-url{color:rgba(255,255,255,0.5);font-size:10px;font-family:system-ui,sans-serif}
+.comp-intel-body{padding:0.85rem;font-size:12px;color:var(--text);line-height:1.6;font-family:system-ui,sans-serif}
+.comp-intel-body strong{color:var(--charcoal);font-size:10px;text-transform:uppercase;letter-spacing:0.06em}
+.ai-loading{display:flex;align-items:center;gap:10px;padding:1rem;font-size:13px;color:var(--muted);font-family:system-ui,sans-serif}
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--upload);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.autofill-badge{display:inline-flex;align-items:center;gap:4px;background:#EAF2F8;border:1px solid var(--upload-border);color:var(--upload);font-size:10px;padding:2px 8px;border-radius:20px;font-family:system-ui,sans-serif;font-weight:600;margin-left:6px;vertical-align:middle}
+
+/* ===== STEP 1: SWOTT ===== */
+.org-setup{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem}
+.setup-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:0.85rem;font-family:system-ui,sans-serif}
+.org-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.org-cell{display:flex;flex-direction:column;gap:6px}
+.org-hd{display:flex;align-items:center;gap:8px}
+.opill{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:Georgia,serif;flex-shrink:0}
+.op-a{background:var(--charcoal);color:#fff}
+.op-b,.op-c,.op-d{background:var(--light);color:var(--muted);border:1px solid var(--border)}
+.org-role{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-family:system-ui,sans-serif}
+.org-inp{width:100%;font-size:12.5px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);outline:none;font-family:system-ui,sans-serif;transition:border-color 0.15s}
+.org-inp:focus{border-color:var(--brown);background:var(--surface)}
+.org-inp.own{border-color:var(--brown);background:#FAF8F5}
+.org-inp::placeholder{color:#C0BCB6}
+.comp-note{font-size:11px;color:var(--upload);background:var(--upload-light);border:1px solid var(--upload-border);border-radius:5px;padding:5px 9px;margin-top:4px;font-family:system-ui,sans-serif}
+
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.sw-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.sw-full{grid-column:1/-1}
+.sw-hd{padding:0.7rem 1rem;display:flex;align-items:center;gap:10px;border-bottom:2px solid transparent}
+.hd-s{background:#EAF2EA;border-bottom-color:#9EC89E}
+.hd-w{background:#F5EAEA;border-bottom-color:#C89E9E}
+.hd-o{background:#EAEEf5;border-bottom-color:#9EAEC8}
+.hd-t{background:#F5F0EA;border-bottom-color:#C8BE9E}
+.sw-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:Georgia,serif;flex-shrink:0;color:#fff;letter-spacing:-0.5px}
+.ic-s{background:#2E5A2E}.ic-w{background:#5A2E2E}.ic-o{background:#2E3E5A}.ic-t{background:#5A4A2E}
+.sw-title{font-size:13px;font-weight:600}
+.tt-s{color:#2E5A2E}.tt-w{color:#5A2E2E}.tt-o{color:#2E3E5A}.tt-t{color:#5A4A2E}
+.sw-desc{font-size:11px;color:var(--muted);margin-top:1px;font-family:system-ui,sans-serif}
+.sw-cols{display:grid;grid-template-columns:repeat(4,1fr)}
+.sw-col{border-right:1px solid var(--border);padding:0.85rem}
+.sw-col:last-child{border-right:none}
+.sw-col-hd{display:flex;align-items:center;gap:6px;margin-bottom:0.55rem;padding-bottom:0.5rem;border-bottom:1px solid var(--light)}
+.cpill{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:Georgia,serif;flex-shrink:0}
+.cp-a{background:var(--charcoal);color:#fff}
+.cp-b,.cp-c,.cp-d{background:var(--light);color:var(--muted);border:1px solid var(--border)}
+.sw-col-name{font-size:11px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-family:system-ui,sans-serif}
+.sw-ta{width:100%;font-size:11.5px;padding:6px 7px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;resize:vertical;min-height:90px;outline:none;line-height:1.5;transition:border-color 0.15s}
+.sw-ta:focus{border-color:var(--brown);background:var(--surface)}
+.sw-ta::placeholder{color:#C0BCB6;font-style:italic;font-size:10.5px}
+.sw-ta.ai-filled{border-color:var(--upload-border);background:var(--upload-light)}
+
+/* ===== STEP 2: PROJECT INTELLIGENCE ===== */
+.pillars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.pillar{border-radius:10px;overflow:hidden;border:1.5px solid}
+.p-what{border-color:var(--what-border);background:var(--what-light)}
+.p-how{border-color:var(--how-border);background:var(--how-light)}
+.p-why{border-color:var(--why-border);background:var(--why-light)}
+.p-hd{padding:0.75rem 1rem}
+.p-what .p-hd{background:var(--what)}.p-how .p-hd{background:var(--how)}.p-why .p-hd{background:var(--why)}
+.p-tag{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:system-ui,sans-serif}
+.p-title{color:#fff;font-size:13px;font-weight:600;line-height:1.3}
+.p-q{color:rgba(255,255,255,0.7);font-size:11px;margin-top:3px;line-height:1.4;font-family:system-ui,sans-serif}
+.rank-note{color:rgba(255,255,255,0.9);font-size:10.5px;margin-top:5px;font-style:italic;font-family:system-ui,sans-serif;background:rgba(0,0,0,0.15);padding:4px 8px;border-radius:4px}
+.p-body{padding:0.85rem 1rem}
+.rank-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;position:relative}
+.rank-badge{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:6px;font-family:system-ui,sans-serif}
+.p-what .rank-badge{background:var(--what);color:#fff}
+.p-how .rank-badge{background:var(--how);color:#fff}
+.p-why .rank-badge{background:var(--why);color:#fff}
+.rank-badge.inactive{background:var(--border);color:var(--muted)}
+.rank-sel-wrap{flex:1;position:relative}
+.p-sel{width:100%;font-size:12px;padding:6px 26px 6px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:none;font-family:system-ui,sans-serif;cursor:pointer;-webkit-appearance:none;appearance:none}
+.p-sel:focus{border-color:var(--brown)}
+.p-sel.unk{color:#B05020;background:#FFF6F0;border-color:#E8C0A0}
+.p-sel.selected{border-color:currentColor;font-weight:500}
+.arr{position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);font-size:10px}
+.manual-inp{width:100%;font-size:12px;padding:6px 8px;border-radius:5px;border:1px dashed var(--border);background:rgba(255,255,255,0.7);color:var(--text);outline:none;font-family:system-ui,sans-serif;margin-top:4px;display:none}
+.manual-inp.show{display:block}
+.manual-inp::placeholder{color:#C0BCB6;font-style:italic}
+.unk-alert{background:#FFF0E8;border:1px solid #E8C0A0;border-radius:6px;padding:7px 10px;font-size:11.5px;color:#8B4010;margin-top:6px;display:none;font-family:system-ui,sans-serif}
+.unk-alert.show{display:block}
+.p-fp{margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(0,0,0,0.07)}
+.p-fp-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;font-family:system-ui,sans-serif}
+.p-what .p-fp-label{color:var(--what)}.p-how .p-fp-label{color:var(--how)}.p-why .p-fp-label{color:var(--why)}
+.p-ta{width:100%;font-size:12px;padding:7px 9px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:system-ui,sans-serif;resize:vertical;min-height:54px;outline:none}
+.p-ta:focus{border-color:var(--brown)}
+.p-ta::placeholder{color:#C0BCB6}
+.mandatory-note{font-size:10.5px;color:#C0392B;font-family:system-ui,sans-serif;margin-top:3px;display:none}
+.mandatory-note.show{display:block}
+.why-prompt{display:none;margin-top:6px;padding:7px 9px;background:rgba(0,0,0,0.04);border-left:2px solid currentColor;border-radius:0 5px 5px 0}
+.why-prompt.show{display:block}
+.p-what .why-prompt{border-color:var(--what)}
+.p-how .why-prompt{border-color:var(--how)}
+.p-why .why-prompt{border-color:var(--why)}
+.why-prompt-label{font-size:9.5px;font-weight:600;color:var(--muted);font-family:system-ui,sans-serif;margin-bottom:4px;font-style:italic}
+.pillar-why-block{margin-top:1rem;padding:0.85rem;border-radius:8px;border:1.5px solid}
+.p-what .pillar-why-block{background:rgba(90,74,138,0.06);border-color:var(--what-border)}
+.p-how .pillar-why-block{background:rgba(46,107,90,0.06);border-color:var(--how-border)}
+.p-why .pillar-why-block{background:rgba(138,74,42,0.06);border-color:var(--why-border)}
+.pillar-why-label{font-size:11px;font-weight:700;margin-bottom:6px;font-family:system-ui,sans-serif}
+.p-what .pillar-why-label{color:var(--what)}
+.p-how .pillar-why-label{color:var(--how)}
+.p-why .pillar-why-label{color:var(--why)}
+.why-ta{width:100%;font-size:11.5px;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.8);color:var(--text);font-family:system-ui,sans-serif;resize:vertical;min-height:52px;outline:none;line-height:1.5}
+.why-ta:focus{border-color:var(--brown);background:#fff}
+
+/* ===== STEP 3: KEY MESSAGE ===== */
+.km-top{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.km-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.km-hd{background:var(--charcoal);padding:0.7rem 1rem}
+.km-qn{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5);margin-bottom:2px;font-family:system-ui,sans-serif}
+.km-q{color:#fff;font-size:13px;font-weight:500;line-height:1.4}
+.km-body{padding:1rem}
+.km-sel-wrap{position:relative}
+.km-sel{width:100%;font-size:13px;padding:8px 30px 8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);outline:none;font-family:system-ui,sans-serif;cursor:pointer;-webkit-appearance:none;appearance:none}
+.km-sel:focus{border-color:var(--brown)}
+.km-sel.chosen{border-color:var(--brown);background:var(--surface);font-weight:500}
+.theme-result{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;transition:all 0.4s;margin-bottom:1.5rem}
+.theme-result.revealed{border-color:var(--brown)}
+.tr-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.5rem;font-family:system-ui,sans-serif}
+.tr-name{font-family:Georgia,serif;font-size:2rem;color:var(--charcoal);font-weight:400;margin-bottom:0.35rem}
+.theme-result.revealed .tr-name{color:var(--brown)}
+.tr-desc{font-size:13px;color:var(--muted);line-height:1.5;max-width:480px;margin:0 auto;font-family:system-ui,sans-serif}
+.themes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem}
+.theme-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:1rem;transition:all 0.3s;opacity:0.4}
+.theme-card.active{opacity:1;border-color:var(--brown);background:#FAF8F5;transform:translateY(-2px)}
+.th-name{font-family:Georgia,serif;font-size:1.1rem;font-weight:400;color:var(--charcoal);margin-bottom:5px}
+.theme-card.active .th-name{color:var(--brown)}
+.th-desc{font-size:11px;color:var(--muted);font-style:italic;line-height:1.4;font-family:system-ui,sans-serif}
+
+/* ===== STRATEGY GENERATOR ===== */
+.gen-section{background:var(--surface);border:1.5px solid var(--brown);border-radius:12px;overflow:hidden;margin-top:1.5rem}
+.gen-hd{background:var(--charcoal);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+.gen-hd-left h3{color:#fff;font-size:14px;font-weight:600;margin-bottom:2px}
+.gen-hd-left p{color:rgba(255,255,255,0.55);font-size:11.5px;font-family:system-ui,sans-serif}
+.gen-btn{padding:9px 22px;background:var(--brown);color:#fff;border:none;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:system-ui,sans-serif;display:flex;align-items:center;gap:8px;transition:all 0.2s}
+.gen-btn:hover{background:#7A6E62}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed}
+.gen-body{padding:1.25rem}
+.mandatory-fields-check{background:#FFF9F5;border:1px solid #E8C0A0;border-radius:8px;padding:0.85rem 1rem;margin-bottom:1rem;font-size:12.5px;color:#8B4010;font-family:system-ui,sans-serif;display:none}
+.mandatory-fields-check.show{display:block}
+.mandatory-fields-check ul{margin-top:6px;padding-left:1.2rem}
+.mandatory-fields-check li{margin-bottom:2px;font-size:12px}
+.strat-output{display:none}
+.strat-output.show{display:block}
+.strat-output-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.so-card{border-radius:10px;overflow:hidden;border:1.5px solid}
+.so-what{border-color:var(--what-border)}.so-how{border-color:var(--how-border)}.so-why{border-color:var(--why-border)}
+.so-hd{padding:0.75rem 1rem}
+.so-what .so-hd{background:var(--what)}.so-how .so-hd{background:var(--how)}.so-why .so-hd{background:var(--why)}
+.so-tag{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:system-ui,sans-serif}
+.so-title{color:#fff;font-size:13px;font-weight:600}
+.so-body{padding:1rem}
+.so-what .so-body{background:var(--what-light)}.so-how .so-body{background:var(--how-light)}.so-why .so-body{background:var(--why-light)}
+.so-section{margin-bottom:0.85rem}
+.so-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;font-family:system-ui,sans-serif}
+.so-what .so-label{color:var(--what)}.so-how .so-label{color:var(--how)}.so-why .so-label{color:var(--why)}
+.so-text{font-size:12.5px;color:var(--text);line-height:1.6;font-family:system-ui,sans-serif}
+.so-int{margin-top:0.65rem;padding:0.65rem 0.85rem;border:1px dashed var(--border);border-radius:6px;background:rgba(255,255,255,0.5)}
+.so-int-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;font-family:system-ui,sans-serif}
+.so-int-text{font-size:11.5px;color:var(--text);line-height:1.5;font-family:system-ui,sans-serif}
+.strat-summary{background:var(--charcoal);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem}
+.strat-summary-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;font-family:system-ui,sans-serif}
+.strat-summary-text{color:#fff;font-size:14px;line-height:1.6}
+
+/* SHARED */
+.row-actions{display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.25rem;align-items:center}
+.reset-btn{padding:8px 18px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif;transition:all 0.2s}
+.reset-btn:hover{border-color:#8B2020;color:#8B2020}
+.dl-btn{padding:8px 20px;background:var(--charcoal);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif;display:flex;align-items:center;gap:6px;transition:all 0.2s}
+.dl-btn:hover{opacity:0.85}
+.dl-btn:disabled{opacity:0.5;cursor:not-allowed}
+.step-complete-badge{display:inline-flex;align-items:center;gap:4px;background:#EAF5EA;border:1px solid #9EC89E;color:#2E5A2E;font-size:10px;padding:2px 8px;border-radius:20px;font-family:system-ui,sans-serif;font-weight:600}
+
+@media(max-width:820px){
+  .org-row,.comp-url-row{grid-template-columns:1fr 1fr}
+  .upload-zone-wrap,.comp-intel-grid{grid-template-columns:1fr}
+  .sw-grid,.pillars,.strat-output-grid,.themes-grid,.km-top{grid-template-columns:1fr}
+  .sw-full{grid-column:1}
+  .sw-cols{grid-template-columns:1fr 1fr}
+  .tabs-wrap,.wrap{padding-left:1rem;padding-right:1rem}
+  .pbar-inner{padding-left:1rem;padding-right:1rem}
+  .ai-panel-body{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div>
-    <div class="logo-brand">PROJX</div>
-    <div class="logo-tagline">FOCUSED. CREATIVE. RESULTS.</div>
-  </div>
-  <div class="header-title">Strategy to Win</div>
+<div class="topbar">
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACbAAAALJCAMAAABYlmfJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA/RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LjE2NDc1MywgMjAyMS8wMi8xNS0xMTo1MjoxMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ1dWlkOjVEMjA4OTI0OTNCRkRCMTE5MTRBODU5MEQzMTUwOEM4IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjQyNUUyMzcxOEU4RTExRUI5MDlERTBDOTBBOUVBODg1IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjQyNUUyMzcwOEU4RTExRUI5MDlERTBDOTBBOUVBODg1IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIElsbHVzdHJhdG9yIDI1LjIgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozZjkyZTYzNi0zNWEyLTQyMmYtYTMwOS05MGQ5OTQzNWViNWEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6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" style="height:28px;display:block;" alt="ProjX"/>
+  <span class="logo-sub">Strategy to Win Tool &mdash; Internal</span>
 </div>
 
-<div class="container">
-  <div class="page-title">Strategy to Win</div>
-  <div class="page-sub">Select up to 3 per column, then generate your pitch strategy.</div>
-
-  <div class="selector-grid">
-    <div class="selector-card">
-      <div class="sel-hdr"><div class="sel-step">Step 01</div><div class="sel-title">Developer's Goal</div></div>
-      <div class="sel-body" id="col1"></div>
-      <div class="opt-limit">Select up to 3</div>
-    </div>
-    <div class="selector-card">
-      <div class="sel-hdr"><div class="sel-step">Step 02</div><div class="sel-title">What They're Judging Us On</div></div>
-      <div class="sel-body" id="col2"></div>
-      <div class="opt-limit">Select up to 3</div>
-    </div>
-    <div class="selector-card">
-      <div class="sel-hdr"><div class="sel-step">Step 03</div><div class="sel-title">Our Strongest Differentiator</div></div>
-      <div class="sel-body" id="col3"></div>
-      <div class="opt-limit">Select up to 3</div>
-    </div>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Strategy development</div>
+    <h1>Strategy to Win Tool</h1>
+    <p>This tool is built to go deeper — uncovering the real motivations, pressures, and priorities behind every opportunity so you can build a pitch strategy that is more creative, more tuned in, and cuts through the competition. The output is a pitch theme direction and strategy framework ready to carry into your submission and presentation.</p>
   </div>
+</div>
 
-  <div class="gen-wrap">
-    <button class="btn-gen" id="btnGen" onclick="generate()" disabled>Generate Strategy</button>
+<div class="pbar">
+  <div class="pbar-inner">
+    <label>Project</label><input type="text" id="inp-project" placeholder="Project name...">
+    <label>Client</label><input type="text" id="inp-client" placeholder="Client name...">
+    <label>Date</label><input type="date" id="inp-date">
   </div>
+</div>
 
-  <div class="results" id="results">
-    <div class="res-hdr">
-      <div class="res-title">Your Pitch Strategy</div>
-      <div class="res-badge" id="resBadge">—</div>
-    </div>
-    <div class="res-body">
-      <div class="opening">
-        <div class="open-lbl">Recommended Opening</div>
-        <div class="open-txt" id="openTxt">—</div>
-      </div>
-      <div class="strategy-grid">
-        <div class="s-card">
-          <div class="s-card-hdr">Lead With</div>
-          <div class="s-card-body">
-            <div class="s-angle" id="msgAngle">—</div>
-            <div class="s-desc" id="msgDesc">—</div>
-          </div>
-        </div>
-        <div class="s-card">
-          <div class="s-card-hdr">Emotional Hook</div>
-          <div class="s-card-body">
-            <div class="trigger-pill" id="trgPill">—</div>
-            <div class="s-desc" id="trgDesc">—</div>
-          </div>
-        </div>
-      </div>
-      <div class="proof-lbl">Proof Points to Use</div>
-      <div class="proof-grid" id="proofGrid"></div>
-      <button class="btn-reset" onclick="reset()">↺ Start Over</button>
+<div class="tabs-wrap">
+  <div class="tabs-wrap-inner">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(0,this)"><span class="tab-num">1</span> Intelligence upload</button>
+      <button class="tab-btn" onclick="switchTab(1,this)"><span class="tab-num">2</span> Competitor analysis</button>
+      <button class="tab-btn" onclick="switchTab(2,this)"><span class="tab-num">3</span> Project intelligence</button>
+      <button class="tab-btn" onclick="switchTab(3,this)"><span class="tab-num">4</span> Key message</button>
+      <button class="tab-btn" onclick="switchTab(4,this)"><span class="tab-num">5</span> Strategy to Win</button>
     </div>
   </div>
 </div>
 
-<footer>ProjX Group Australia &nbsp;·&nbsp; ACN 648 375 295 &nbsp;·&nbsp; Confidential — Internal Use Only</footer>
+<div class="wrap">
+<div class="wrap-inner">
+
+<!-- TAB 0: UPLOAD PORTAL -->
+<div class="tab-panel active" id="tab-0">
+  <div class="upload-hero">
+    <h2>📁 Intelligence Upload Portal</h2>
+    <p>Upload all client correspondence — RFP documents, emails, briefs, EOIs, and any supporting materials. The tool will extract key intelligence and auto-populate fields across the tool.</p>
+  </div>
+
+  <div class="upload-zone-wrap">
+    <div class="upload-zone" id="drop-docs" ondragover="handleDrag(event,true,'drop-docs')" ondragleave="handleDrag(event,false,'drop-docs')" ondrop="handleDrop(event,'docs')">
+      <input type="file" multiple accept=".pdf,.doc,.docx,.txt,.eml,.msg,.pages" onchange="handleFiles(event,'docs')">
+      <div class="upload-icon">📄</div>
+      <h3>Client Correspondence</h3>
+      <p>RFP, EOI, briefs, scope documents, emails<br>PDF, Word, TXT and more accepted</p>
+      <div class="file-list" id="file-list-docs"></div>
+    </div>
+    <div class="upload-zone" id="drop-extra" ondragover="handleDrag(event,true,'drop-extra')" ondragleave="handleDrag(event,false,'drop-extra')" ondrop="handleDrop(event,'extra')">
+      <input type="file" multiple accept=".pdf,.doc,.docx,.txt,.eml,.msg" onchange="handleFiles(event,'extra')">
+      <div class="upload-icon">📧</div>
+      <h3>Supporting Materials</h3>
+      <p>Texts, additional emails, notes<br>Any supporting context</p>
+      <div class="file-list" id="file-list-extra"></div>
+    </div>
+  </div>
+
+  <div class="comp-url-section">
+    <div class="comp-url-title">Website Intelligence &amp; Client Notes</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem">
+      <div>
+        <div class="comp-url-label" style="margin-bottom:6px">🎯 Client / developer website</div>
+        <input class="comp-url-inp" type="url" id="client-url" placeholder="https://developer.com.au">
+        <div style="font-size:10.5px;color:var(--muted);font-family:system-ui,sans-serif;margin-top:3px;margin-bottom:8px">Used to research the developer's business, projects, and context</div>
+        <div class="comp-url-label" style="margin-bottom:4px;font-size:9px">Your notes on this client</div>
+        <textarea id="client-notes" placeholder="What do you already know about this developer? Relationship history, their pain points, what they care about, past projects, any intel from conversations..." style="width:100%;font-size:12px;padding:7px 9px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;resize:vertical;min-height:80px;outline:none;line-height:1.5;transition:border-color 0.15s" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+      <div>
+        <div class="comp-url-label" style="margin-bottom:6px">🏗️ Project / development website</div>
+        <input class="comp-url-inp" type="url" id="project-url" placeholder="https://projectwebsite.com.au (if exists)">
+        <div style="font-size:10.5px;color:var(--muted);font-family:system-ui,sans-serif;margin-top:3px;margin-bottom:8px">Project microsite or listing URL if available</div>
+        <div class="comp-url-label" style="margin-bottom:4px;font-size:9px">Your notes on this project / opportunity</div>
+        <textarea id="project-notes" placeholder="What do you know about this development? Location, typology, scale, target buyer, stage of development, any site visits or conversations that revealed something important..." style="width:100%;font-size:12px;padding:7px 9px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;resize:vertical;min-height:80px;outline:none;line-height:1.5;transition:border-color 0.15s" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);font-family:system-ui,sans-serif;margin-bottom:1rem">The tool will extract intelligence from your documents and research the client — only using publicly available information. Your notes are kept private and used only to inform your strategy.</p>
+    <button class="ai-analyse-btn" id="analyse-btn" onclick="runAnalysis()">
+      <span>⚡</span> Analyse documents &amp; research client
+    </button>
+  </div>
+
+  <div class="ai-panel" id="ai-panel">
+    <div class="ai-panel-hd">
+      <div class="ai-panel-hd-icon">🧠</div>
+      <div>
+        <div class="ai-panel-hd-text">Intelligence extracted from your documents</div>
+        <div class="ai-panel-hd-sub">Fields auto-populated across the tool where data was found. Review all entries before proceeding.</div>
+      </div>
+    </div>
+    <div class="ai-panel-body" id="ai-extract-body">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <div id="org-intel-section" style="display:none;margin-bottom:1.25rem">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:0.75rem;font-family:system-ui,sans-serif">Organisation intelligence</div>
+    <div class="comp-intel-grid" style="grid-template-columns:1fr 1fr" id="org-intel-grid"></div>
+  </div>
+
+  <div class="row-actions" style="margin-top:1.5rem">
+    <button class="dl-btn" onclick="switchTab(1,document.querySelectorAll('.tab-btn')[1])">Proceed to Competitor Analysis →</button>
+  </div>
+</div>
+
+<!-- TAB 1: COMPETITOR ANALYSIS -->
+<div class="tab-panel" id="tab-1">
+  <div class="intro"><strong>Step 2 — Competitor Analysis:</strong> Enter competitor agency website URLs below and click "Research Competitors" — the tool will analyse their positioning and pre-populate the SWOT grid. Then add your own market knowledge in the columns below. The more honest this is, the sharper the strategy.</div>
+  <div class="org-setup">
+    <div class="setup-title">Organisations &amp; competitor URLs</div>
+    <div class="org-row">
+      <div class="org-cell">
+        <div class="org-hd"><div class="opill op-a">A</div><span class="org-role">Your organisation</span></div>
+        <input class="org-inp own" type="text" id="org-A" placeholder="Your organisation..." oninput="refreshNames()">
+        <input class="comp-url-inp" type="url" id="our-url" placeholder="https://yourcompany.com.au" style="margin-top:4px;font-size:11px;padding:4px 8px">
+        <div style="font-size:10px;color:var(--muted);font-family:system-ui,sans-serif;margin-top:2px">Your website — for benchmarking</div>
+      </div>
+      <div class="org-cell">
+        <div class="org-hd"><div class="opill op-b">B</div><span class="org-role">Competitor 1</span></div>
+        <input class="comp-url-inp" type="url" id="comp-url-B" placeholder="https://competitor1.com.au" oninput="updateCompName('B')" style="margin-bottom:4px">
+        <input class="org-inp" type="text" id="org-B" placeholder="Name from URL..." oninput="refreshNames()" style="font-size:11px;padding:4px 8px">
+        <div class="comp-note" id="comp-note-B" style="display:none"></div>
+      </div>
+      <div class="org-cell">
+        <div class="org-hd"><div class="opill op-c">C</div><span class="org-role">Competitor 2</span></div>
+        <input class="comp-url-inp" type="url" id="comp-url-C" placeholder="https://competitor2.com.au" oninput="updateCompName('C')" style="margin-bottom:4px">
+        <input class="org-inp" type="text" id="org-C" placeholder="Name from URL..." oninput="refreshNames()" style="font-size:11px;padding:4px 8px">
+        <div class="comp-note" id="comp-note-C" style="display:none"></div>
+      </div>
+      <div class="org-cell">
+        <div class="org-hd"><div class="opill op-d">D</div><span class="org-role">Competitor 3</span></div>
+        <input class="comp-url-inp" type="url" id="comp-url-D" placeholder="https://competitor3.com.au" oninput="updateCompName('D')" style="margin-bottom:4px">
+        <input class="org-inp" type="text" id="org-D" placeholder="Name from URL..." oninput="refreshNames()" style="font-size:11px;padding:4px 8px">
+        <div class="comp-note" id="comp-note-D" style="display:none"></div>
+      </div>
+    </div>
+    <div style="margin-top:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+      <button class="ai-analyse-btn" id="comp-research-btn" onclick="runCompetitorResearch()" style="font-size:12px;padding:8px 18px">
+        <span>🔍</span> Research competitors
+      </button>
+      <div class="ai-loading" id="comp-research-loading" style="display:none;padding:0">
+        <div class="spinner"></div>
+        <span style="font-size:12px">Researching competitor positioning...</span>
+      </div>
+    </div>
+    <div id="comp-intel-section" style="display:none;margin-top:1rem">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:0.65rem;font-family:system-ui,sans-serif">Competitor intelligence — review before completing analysis below</div>
+      <div class="comp-intel-grid" id="comp-intel-grid"></div>
+    </div>
+  </div>
+  <div class="sw-grid" id="sw-grid"></div>
+  <div class="row-actions"><button class="reset-btn" onclick="resetSwott()">Reset step 2</button></div>
+</div>
+
+<!-- TAB 2: PROJECT INTELLIGENCE -->
+<div class="tab-panel" id="tab-2">
+  <div class="intro"><strong>Step 3 — Project intelligence:</strong> Rank your answers from <strong>most to least important</strong> — #1 is your primary insight. Choose up to 3 per pillar. If your answer isn't in the list, use the manual entry field. All fields marked with <span style="color:#C0392B">*</span> are required to generate your Strategy to Win. If you don't know an answer, go back to the client first.</div>
+  <div class="pillars" id="pillars"></div>
+  <div class="row-actions"><button class="reset-btn" onclick="resetIntelligence()">Reset step 3</button></div>
+</div>
+
+<!-- TAB 3: KEY MESSAGE -->
+<div class="tab-panel" id="tab-3">
+  <div class="intro"><strong>Step 4 — Key message:</strong> Answer two questions. The combination generates a single pitch theme that should run through your entire submission and presentation — your creative and strategic north star.</div>
+  <div class="km-top">
+    <div class="km-card">
+      <div class="km-hd"><div class="km-qn">Question 1</div><div class="km-q">What is the primary reason this developer should choose Projx?</div></div>
+      <div class="km-body">
+        <div class="km-sel-wrap">
+          <select class="km-sel" id="kq1" onchange="updateTheme()">
+            <option value="">Select an option...</option>
+            <option value="campaign">Our campaign — the creative, digital and sales strategy we will execute</option>
+            <option value="database">Our database — qualified buyers ready to act in this corridor and price point</option>
+            <option value="brand">Our brand positioning — how we will elevate this project above the competition</option>
+            <option value="team">Our team — senior, experienced people who will be there from day one to settlement</option>
+            <option value="results">Our results — comparable pre-sales, rate of sale, and buyer conversion track record</option>
+          </select>
+          <span class="arr">▾</span>
+        </div>
+      </div>
+    </div>
+    <div class="km-card">
+      <div class="km-hd"><div class="km-qn">Question 2</div><div class="km-q">What do you want this developer to feel after hearing our pitch?</div></div>
+      <div class="km-body">
+        <div class="km-sel-wrap">
+          <select class="km-sel" id="kq2" onchange="updateTheme()">
+            <option value="">Select an option...</option>
+            <option value="trust">Trust — "these people will have our back, no matter what the market does"</option>
+            <option value="confidence">Confidence — "they've sold projects like ours, they know this buyer"</option>
+            <option value="reassurance">Reassurance — "our pre-sales are in safe hands, the programme is protected"</option>
+            <option value="excitement">Excitement — "this campaign will make our project the one everyone is talking about"</option>
+            <option value="empowerment">Clarity — "they make the marketing side easy so we can focus on delivery"</option>
+          </select>
+          <span class="arr">▾</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="theme-result" id="theme-result">
+    <div class="tr-label">Your pitch messaging should centre around</div>
+    <div class="tr-name" id="tr-name">—</div>
+    <div class="tr-desc" id="tr-desc">Answer both questions above to reveal your recommended pitch messaging direction.</div>
+  </div>
+  <div class="themes-grid" id="themes-grid"></div>
+  <div class="row-actions">
+    <button class="reset-btn" onclick="resetKeyMessage()">Reset step 4</button>
+    <button class="dl-btn" id="dl-btn" onclick="downloadTool()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Save tool
+    </button>
+  </div>
+</div>
+
+<!-- TAB 4: STRATEGY TO WIN -->
+<div class="tab-panel" id="tab-4">
+  <div class="intro"><strong>Step 5 — Strategy to Win:</strong> This is your final step. The tool will synthesise everything you've entered — document intelligence, competitor analysis, project intelligence, and your key message — into a complete, downloadable Strategy to Win framework for your submission.</div>
+  <div class="gen-section">
+    <div class="gen-hd">
+      <div class="gen-hd-left">
+        <h3>✨ Generate Strategy to Win</h3>
+        <p>Complete steps 1–4 first, then generate your complete strategy framework for this submission</p>
+      </div>
+      <button class="gen-btn" id="gen-btn" onclick="generateStrategy()">
+        <span>⚡</span> Generate Strategy
+      </button>
+    </div>
+    <div class="gen-body">
+      <div class="mandatory-fields-check" id="mandatory-check"></div>
+      <div class="ai-loading" id="gen-loading" style="display:none">
+        <div class="spinner"></div>
+        <span>Generating your Strategy to Win from all project intelligence...</span>
+      </div>
+      <div class="strat-output" id="strat-output">
+        <div id="strat-output-grid"></div>
+        <div class="row-actions">
+          <button class="reset-btn" onclick="clearStrategy()">Regenerate</button>
+          <button class="dl-btn" id="pdf-dl-btn" onclick="downloadStrategyPDF()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download Strategy PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- wrap-inner -->
+</div><!-- wrap -->
 
 <script>
-// Scores: [BUYERS, PROOF, STRATEGY, TEAM, DATA, CONFIDENCE, SPEED, PREMIUM, CONTROL, PARTNERSHIP]
-const col1Data=[
-  {t:"Maximise price per lot / apartment",      s:[0,0,1,0,2, 0,0,3,0,0]},
-  {t:"Achieve fast sell-out",                   s:[3,0,1,0,0, 0,3,0,0,0]},
-  {t:"Build project brand & prestige",          s:[0,1,2,0,0, 0,0,2,0,0]},
-  {t:"De-risk the launch",                      s:[0,3,1,0,0, 3,0,0,0,0]},
-  {t:"Generate early off-plan momentum",        s:[2,0,1,0,0, 0,2,0,0,1]},
-  {t:"Maximise total project revenue",          s:[0,0,2,0,2, 0,0,1,0,0]},
-  {t:"Attract quality / target buyer profile",  s:[3,0,1,0,0, 0,0,1,0,0]},
-  {t:"Manage unsold / slow-moving stock",       s:[0,0,2,2,0, 0,1,0,1,0]},
-  {t:"Enter a new market or suburb",            s:[0,2,2,0,0, 1,0,0,0,0]},
-  {t:"Reduce complexity & stress",              s:[0,0,0,3,0, 2,0,0,1,1]},
-];
-const col2Data=[
-  {t:"Proven sales velocity",                   s:[0,3,0,0,0, 0,2,0,0,0]},
-  {t:"Buyer database depth & quality",          s:[3,0,0,0,0, 0,1,0,0,0]},
-  {t:"Pricing strategy & valuation advice",     s:[0,0,0,0,3, 0,0,2,0,0]},
-  {t:"Marketing reach & media capability",      s:[0,0,2,0,0, 0,0,1,0,1]},
-  {t:"Agent & referral network",                s:[2,1,0,0,0, 0,0,0,0,1]},
-  {t:"Track record in similar projects",        s:[0,3,0,0,0, 2,0,0,0,0]},
-  {t:"Fee structure & alignment",               s:[0,0,0,0,0, 0,0,0,1,3]},
-  {t:"Reporting & transparency",                s:[0,0,0,1,0, 0,0,0,3,0]},
-  {t:"Team experience & availability",          s:[0,0,0,3,0, 1,0,0,0,0]},
-  {t:"Project positioning & brand strategy",    s:[0,0,3,0,0, 0,0,1,0,0]},
-];
-const col3Data=[
-  {t:"Off-market buyer database",               s:[3,0,0,0,0, 0,2,0,0,0]},
-  {t:"Data-led pricing & market intelligence",  s:[0,0,0,0,3, 0,0,2,0,0]},
-  {t:"Proven track record (project type)",      s:[0,3,0,0,0, 2,0,0,0,0]},
-  {t:"Competitive fee structure",               s:[0,0,0,0,0, 0,0,0,1,3]},
-  {t:"Valuation management",                    s:[0,0,0,0,2, 0,0,1,2,0]},
-  {t:"Dedicated project team",                  s:[0,0,0,3,0, 1,0,0,1,0]},
-  {t:"Integrated marketing & sales model",      s:[0,0,2,1,0, 0,1,0,0,1]},
-  {t:"Real-time reporting & dashboard",         s:[0,0,0,0,0, 0,0,0,3,1]},
-  {t:"Developer-aligned incentive structure",   s:[0,0,0,0,0, 0,1,0,0,3]},
-  {t:"Local Brisbane / SEQ market depth",       s:[0,2,0,0,1, 1,0,0,0,0]},
+// ===== GLOBALS =====
+const ORGS = ['A','B','C','D'];
+const ORG_DEF = {A:'Our organisation', B:'Competitor B', C:'Competitor C', D:'Competitor D'};
+const CP_CLS = {A:'cp-a', B:'cp-b', C:'cp-c', D:'cp-d'};
+let uploadedFiles = {docs:[], extra:[]};
+let extractedIntel = null;
+let competitorIntel = {};
+let generatedStrategy = null;
+
+// ===== WHAT OPTIONS — What the developer wants from a project marketing partner =====
+const WHAT_OPTS = [
+  'Achieve pre-sales targets to unlock construction finance',
+  'Maximise rate of sale and minimise days on market',
+  'Attract the right buyer profile (owner-occupier, investor, upsizer)',
+  'Establish a strong project brand and market identity',
+  'Drive off-the-plan sales confidence in a slow or uncertain market',
+  'Generate qualified leads and build a VIP database pre-launch',
+  'Differentiate the project in a saturated or competitive corridor',
+  'Support DA approval or community engagement with market evidence',
+  'Deliver a successful public launch event and media campaign',
+  'Sell remaining stock or re-launch a stalled project',
+  'Provide market intelligence to inform product mix and pricing',
+  'Manage buyer pipeline through to settlement and reduce fallouts',
+  'Build long-term brand equity for the developer across projects',
+  'Execute a digital-first or data-led sales campaign',
+  'Expand into a new geographic market or buyer demographic',
+  '— I don\'t know — go back and ask the developer'
 ];
 
-const MSGS={
-  BUYERS:{label:"Your Buyer Access",desc:"Lead with the depth and quality of your buyer pipeline. Make it concrete — numbers, segments, ready to act.",opening:"Before we talk strategy — we have qualified buyers actively looking for exactly this product right now.",proofs:["Our off-market buyer database has thousands of registered purchasers across SEQ, pre-qualified by price point and product type.","We pre-sell into our database before a single dollar is spent on advertising — often achieving strong pre-commitment before public launch.","Our conversion rate from enquiry to contract is among the strongest in Brisbane new-project sales."]},
-  PROOF:{label:"Track Record",desc:"Lead with evidence. Specific projects, comparable results, client references. Let the numbers do the talking.",opening:"We've done this before — here are the results from projects just like yours.",proofs:["We can show you comparable projects in your corridor where we delivered above-asking results and strong sell-through rates.","Our client retention rate reflects long-term developer relationships — the majority of our pipeline comes from repeat business.","Ask us for a direct reference from a developer who had a similar brief — we'll connect you immediately."]},
-  STRATEGY:{label:"Go-to-Market Strategy",desc:"Lead with a clear, stage-by-stage plan. Show you've already done the thinking — this project, this market.",opening:"We've built a specific launch strategy for this project — here's how we'd execute it stage by stage.",proofs:["Our phased release strategy controls pricing velocity — we never discount to sell, we stage to maintain and build value.","We align every marketing dollar to a sales milestone — no broad brand spend without a clear conversion pathway.","We'll position this project as the benchmark choice in the corridor, not just another listing competing on price."]},
-  TEAM:{label:"Your Team",desc:"Lead with the people. Who they'll deal with daily, how available you are, and why that consistency matters.",opening:"The team you meet today is the team that works your project — every single day, for the life of the appointment.",proofs:["Louka leads every project personally — direct line, always available, no account manager or junior buffer.","Sienna manages all marketing, agent engagement and channel partner relationships hands-on, not delegated.","No handover mid-project — senior team continuity from kickoff to final settlement."]},
-  DATA:{label:"Market Intelligence",desc:"Lead with data. Show you know this market better than anyone — and that knowledge directly protects their investment.",opening:"Here's what the market data is telling us about your project — and exactly how we'd use it.",proofs:["We track live comparable sales across active projects in this corridor in real time — our pricing advice is always current, never lagging.","Our valuation management process protects your buyers' LVR position and keeps purchasers settlement-ready at practical completion.","We've identified a pricing opportunity in this submarket that competing agents are currently leaving on the table."]}
+// ===== HOW OPTIONS — What matters most to the developer when selecting a marketing partner =====
+const HOW_OPTS = [
+  'Proven pre-sales results on comparable residential projects',
+  'Deep understanding of the local buyer market and corridor dynamics',
+  'Strong database of qualified buyers ready to act',
+  'Transparent reporting and real-time campaign performance data',
+  'Integrated marketing and sales under one roof — no gaps',
+  'Creative campaign quality and brand positioning capability',
+  'Speed to market — ability to launch fast without compromising quality',
+  'Agent network and referral channel strength in this geography',
+  'Digital marketing and social media performance',
+  'Pricing strategy and market positioning expertise',
+  'Track record with this specific typology (apartments, townhomes, land)',
+  'Senior team involvement throughout — not just pitch then hand-off',
+  'Collaborative working relationship and communication style',
+  'Ability to provide honest market feedback and challenge assumptions',
+  'International buyer access or FIRB-approved buyer channels',
+  '— I don\'t know — go back and ask the developer'
+];
+
+// ===== WHY OPTIONS — Projx's specific competitive advantages =====
+const WHY_OPTS = [
+  'Proven pre-sales track record across SEQ residential projects',
+  'Existing buyer database with qualified purchasers in this corridor',
+  'Deep local market knowledge — SEQ pricing, buyer behaviour, timing',
+  'Integrated project marketing and sales model — single point of accountability',
+  'Senior team directly engaged from pitch through to settlement',
+  'Creative and brand capability that elevates project positioning',
+  'Strong agent referral network and established co-agent relationships',
+  'Data-led campaign approach with transparent performance reporting',
+  'Experience with this specific product typology and price point',
+  'Existing developer relationship and track record with this client',
+  'Ability to provide independent market insight to challenge the brief',
+  'Speed and agility — can launch faster than larger agency competitors',
+  'Understanding of the target buyer demographic for this project',
+  'Demonstrated ability to sell in challenging market conditions',
+  'Boutique agency model — developers get more attention and accountability',
+  '— I don\'t know — go back and ask the developer'
+];
+
+const SW_DEFS = [
+  {id:'s', hcls:'hd-s', icls:'ic-s', tcls:'tt-s', icon:'S', title:'Strengths', desc:'Where does Projx outperform competing agencies on criteria this developer cares about most?'},
+  {id:'w', hcls:'hd-w', icls:'ic-w', tcls:'tt-w', icon:'W', title:'Weaknesses', desc:'Where do competitors outperform Projx on criteria this developer values?'},
+  {id:'o', hcls:'hd-o', icls:'ic-o', tcls:'tt-o', icon:'O', title:'Opportunities', desc:'What gaps in competitor positioning or market timing can Projx exploit?'},
+  {id:'t', hcls:'hd-t', icls:'ic-t', tcls:'tt-t', icon:'T', title:'Threats', desc:'What competitor strengths or market factors could work against Projx winning this?'}
+];
+
+// Each combination of Q1 (what we bring) x Q2 (how they feel) = unique theme
+const THEME_MAP = {
+  'campaign:trust':     {name:'The Reliable Machine',    desc:'A developer who needs to trust your execution — and your campaign is your proof. Lead with your process discipline, consistent results, and the evidence that your campaigns deliver what they promise, every time.'},
+  'campaign:confidence':  {name:'The Campaign Experts',    desc:'They need to know you\'ve done this exact job before. Your campaign is the centrepiece — lead with comparable project case studies, launch outcomes, and the specificity of your campaign methodology for their project type.'},
+  'campaign:reassurance': {name:'The Risk Removers',      desc:'The developer is nervous about the market. Your campaign framework is the antidote to their anxiety — lead with your data-driven targeting, pre-qualified buyer pools, and the safeguards built into how you run a campaign.'},
+  'campaign:excitement':  {name:'The Market Makers',      desc:'This project needs to be the one everyone is talking about. Your campaign is the spark — lead with creative ambition, launch event concepts, and how you\'ll generate genuine market energy and FOMO around this project.'},
+  'campaign:empowerment': {name:'The Seamless Partner',   desc:'The developer wants marketing handled so they can focus on delivery. Position your campaign capability as a complete, turnkey solution — easy to brief, easy to report on, and built to run with minimal developer involvement.'},
+  'database:trust':     {name:'The Known Quantity',      desc:'Your database is the relationship. Lead with the depth and quality of your buyer relationships in this corridor — people who trust Projx, who have bought before, and who will take a call when you reach out.'},
+  'database:confidence':  {name:'The Buyer Specialists',   desc:'You know who buys in this market better than anyone. Lead with buyer profile data, corridor-specific purchase behaviour, and how your database de-risks their sales target before they go public.'},
+  'database:reassurance': {name:'The Pre-Sales Guarantee', desc:'Risk is in the unknown buyer. Your database is the known quantity — lead with pre-qualified buyers, VIP registrations before launch, and how your pipeline accelerates early pre-sales before any money is spent on public marketing.'},
+  'database:excitement':  {name:'The Launch Ready',       desc:'The energy of a great launch comes from the crowd. Lead with your ability to fill a room, generate immediate registrations, and turn your database into visible market momentum that creates FOMO and drives urgency.'},
+  'database:empowerment': {name:'The Sales Engine',       desc:'A strong database means less chasing, less cold outreach, and more time closing. Position your buyer pipeline as the tool that makes the developer\'s sales journey simpler, faster, and more predictable.'},
+  'brand:trust':        {name:'The Brand Builders',      desc:'Great branding builds developer confidence as much as buyer confidence. Lead with how your brand positioning work has elevated similar projects — and how a well-positioned project protects the developer\'s reputation in market.'},
+  'brand:confidence':   {name:'The Project Storytellers', desc:'They need to believe you can tell this project\'s story better than anyone. Lead with creative samples, brand strategy frameworks, and the results that strong brand positioning has delivered on comparable projects.'},
+  'brand:reassurance':  {name:'The Positioning Experts',  desc:'A clear, differentiated brand reduces market risk. Lead with how you identify white space in the competitive set, position above the noise, and protect pricing through brand strength rather than discounting.'},
+  'brand:excitement':   {name:'The Culture Creators',    desc:'This is about making the project famous. Lead with bold creative thinking, brand world concepts, and how you create a cultural moment around a project that transcends standard property marketing.'},
+  'brand:empowerment':  {name:'The Brand Partners',      desc:'You take brand complexity off the developer\'s plate. Position your brand capability as end-to-end — strategy through to execution — so the developer never has to manage multiple creative suppliers or briefing cycles.'},
+  'team:trust':         {name:'The Trusted Advisors',    desc:'Developers buy people before they buy agencies. Lead with your team\'s longevity, the specific people who will be on this job, and the relationship capital you bring — the developer needs to feel they\'re in safe, senior hands.'},
+  'team:confidence':    {name:'The Industry Veterans',   desc:'Your team\'s experience is the proof. Lead with individual track records, comparable project wins, and the depth of experience sitting in your team — people who have navigated exactly this type of project before.'},
+  'team:reassurance':   {name:'The Steady Hands',        desc:'Market volatility demands experienced stewardship. Lead with how your team has performed across different market cycles — not just in the good times — and the specific risk management experience your people bring.'},
+  'team:excitement':    {name:'The Dream Team',          desc:'The right team creates energy. Lead with the talent, ambition, and creative horsepower in your team — people who love this work, who bring fresh thinking, and who will treat this project as their showcase.'},
+  'team:empowerment':   {name:'The Extension of You',    desc:'The best agency partnership feels like an extension of your in-house team. Lead with your collaborative culture, responsiveness, and how your team integrates seamlessly with the developer\'s own working style.'},
+  'results:trust':      {name:'The Proven Performers',   desc:'Results over time build the deepest trust. Lead with your historical consistency — not just one good campaign, but a track record of delivering across different projects, markets, and conditions.'},
+  'results:confidence': {name:'The Track Record',        desc:'Numbers don\'t lie. Lead with specific, comparable results — pre-sales achieved, rate of sale, launch day results, settlement conversion — that directly mirror what this developer needs to achieve.'},
+  'results:reassurance':{name:'The Risk-Adjusted Choice',desc:'In an uncertain market, results history is risk management. Lead with your worst-case performance, your recovery campaigns, and the evidence that you achieve targets even when conditions are against you.'},
+  'results:excitement': {name:'The Record Breakers',     desc:'Results can be exciting. Lead with your most impressive outcomes — fastest sales, highest prices achieved, biggest launches — and position this project as the next one on that list.'},
+  'results:empowerment':{name:'The Outcome Guarantors',  desc:'Results mean the developer can focus elsewhere. Lead with your reporting transparency, milestone accountability, and how your results track record means fewer conversations about performance and more about progress.'}
 };
-const TRGS={
-  CONFIDENCE:{label:"Confidence",desc:"You're in safe hands. We've been here before and we know exactly what to do."},
-  SPEED:{label:"Speed",desc:"We move fast. Your holding costs are our enemy too — every day on market matters."},
-  PREMIUM:{label:"Premium",desc:"We'll get you top dollar. Our data shows exactly where the value sits — and how to capture it."},
-  CONTROL:{label:"Control",desc:"Full visibility at all times. You'll always know exactly where your project stands."},
-  PARTNERSHIP:{label:"Partnership",desc:"We win when you win. Our fee structure and incentives are perfectly aligned with your outcome."}
-};
 
-const sel={col1:[],col2:[],col3:[]};
+// Pull just the theme name from the map
+function getTheme(q1,q2){return THEME_MAP[q1+':'+q2]||null;}
 
-function renderCol(id,data){
-  const el=document.getElementById(id);
-  el.innerHTML='';
-  data.forEach((item,i)=>{
-    const d=document.createElement('div');
-    d.className='opt'+(sel[id].includes(i)?' sel':'');
-    d.innerHTML='<div class="chk"></div><div class="opt-txt">'+item.t+'</div>';
-    d.onclick=()=>toggle(id,i,data);
-    el.appendChild(d);
+// ===== TAB SWITCHING =====
+function switchTab(idx,btn){
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+}
+
+// ===== FILE UPLOAD =====
+function handleDrag(e,over,id){e.preventDefault();document.getElementById(id).classList.toggle('dragover',over);}
+function handleDrop(e,type){e.preventDefault();const z=e.currentTarget;z.classList.remove('dragover');addFiles(Array.from(e.dataTransfer.files),type);}
+function handleFiles(e,type){addFiles(Array.from(e.target.files),type);}
+function addFiles(files,type){
+  files.forEach(f=>{
+    if(!uploadedFiles[type].find(x=>x.name===f.name)) uploadedFiles[type].push(f);
+  });
+  renderFileList(type);
+}
+function removeFile(type,name){
+  uploadedFiles[type]=uploadedFiles[type].filter(f=>f.name!==name);
+  renderFileList(type);
+}
+function renderFileList(type){
+  const el=document.getElementById('file-list-'+type);
+  el.innerHTML=uploadedFiles[type].map(f=>`
+    <div class="file-item">
+      <span class="file-item-icon">📄</span>
+      <span>${f.name}</span>
+      <span class="file-item-remove" onclick="removeFile('${type}','${f.name}')">✕</span>
+    </div>`).join('');
+}
+
+// ===== EXTRACT URL DOMAIN NAME =====
+function domainName(url){
+  try{const u=new URL(url);return u.hostname.replace(/^www\./,'').split('.')[0];}catch{return url;}
+}
+function updateCompName(org){
+  const url=document.getElementById('comp-url-'+org).value.trim();
+  if(url){
+    try{
+      const name=domainName(url);
+      document.getElementById('org-'+org).value=name.charAt(0).toUpperCase()+name.slice(1);
+      refreshNames();
+    }catch{}
+  }
+}
+
+// ===== READ FILE AS TEXT =====
+function readFileText(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=e=>res(e.target.result);
+    r.onerror=()=>res('[Could not read file: '+file.name+']');
+    r.readAsText(file);
   });
 }
 
-function toggle(id,idx,data){
-  const s=sel[id];
-  const p=s.indexOf(idx);
-  if(p>=0){s.splice(p,1);}
-  else{if(s.length>=3)s.shift();s.push(idx);}
-  renderCol(id,data);
-  document.getElementById('btnGen').disabled=(sel.col1.length+sel.col2.length+sel.col3.length<3);
+// ===== MAIN ANALYSIS FUNCTION (Tab 1 — docs + client research) =====
+async function runAnalysis(){
+  const btn=document.getElementById('analyse-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner" style="width:14px;height:14px;border-color:rgba(255,255,255,0.3);border-top-color:#fff"></div> Analysing...';
+
+  const allFiles=[...uploadedFiles.docs,...uploadedFiles.extra];
+  const clientUrl=document.getElementById('client-url').value.trim();
+  const clientNotes=document.getElementById('client-notes').value.trim();
+  const projectNotes=document.getElementById('project-notes').value.trim();
+  const hasFiles=allFiles.length>0;
+
+  let fileContents='';
+  if(hasFiles){
+    const texts=await Promise.all(allFiles.map(f=>readFileText(f)));
+    fileContents=allFiles.map((f,i)=>`\n\n=== FILE: ${f.name} ===\n${texts[i].substring(0,8000)}`).join('');
+  }
+
+  const extraContext=(clientNotes?`\nUser notes on client: ${clientNotes}`:'')+(projectNotes?`\nUser notes on project: ${projectNotes}`:'');
+
+  const promises=[];
+  if(hasFiles||extraContext) promises.push(extractDocumentIntel(fileContents,extraContext));
+  else promises.push(Promise.resolve(null));
+  if(clientUrl) promises.push(researchOrg('client',clientUrl,'client'));
+  else promises.push(Promise.resolve(null));
+
+  const results=await Promise.allSettled(promises);
+
+  if(results[0].status==='fulfilled'&&results[0].value){
+    extractedIntel=results[0].value;
+    renderExtractedIntel(extractedIntel);
+    applyAutoFill(extractedIntel);
+  }
+
+  const orgCards=[];
+  if(results[1].status==='fulfilled'&&results[1].value) orgCards.push({type:'client',data:results[1].value,url:clientUrl});
+  if(orgCards.length>0) renderOrgIntel(orgCards);
+
+  btn.innerHTML='<span>✓</span> Analysis complete — review below';
+  btn.disabled=false;
 }
 
-function generate(){
-  const t=new Array(10).fill(0);
-  sel.col1.forEach(i=>col1Data[i].s.forEach((v,j)=>t[j]+=v));
-  sel.col2.forEach(i=>col2Data[i].s.forEach((v,j)=>t[j]+=v));
-  sel.col3.forEach(i=>col3Data[i].s.forEach((v,j)=>t[j]+=v));
-  
-  const mk=['BUYERS','PROOF','STRATEGY','TEAM','DATA'];
-  const tk=['CONFIDENCE','SPEED','PREMIUM','CONTROL','PARTNERSHIP'];
-  let bm=0,bt=0;
-  for(let i=1;i<5;i++){if(t[i]>t[bm])bm=i;if(t[5+i]>t[5+bt])bt=i;}
-  
-  const msg=MSGS[mk[bm]],trg=TRGS[tk[bt]];
-  document.getElementById('resBadge').textContent=mk[bm]+' · '+tk[bt];
-  document.getElementById('openTxt').textContent='"'+msg.opening+'"';
-  document.getElementById('msgAngle').textContent=msg.label;
-  document.getElementById('msgDesc').textContent=msg.desc;
-  document.getElementById('trgPill').textContent=trg.label;
-  document.getElementById('trgDesc').textContent=trg.desc;
-  
-  const pg=document.getElementById('proofGrid');
-  pg.innerHTML='';
-  msg.proofs.forEach((p,i)=>{
-    const d=document.createElement('div');
-    d.className='proof-item';
-    d.innerHTML='<div class="proof-num">0'+(i+1)+'</div><div class="proof-text">'+p+'</div>';
-    pg.appendChild(d);
+// ===== DOCUMENT EXTRACTION VIA AI =====
+async function extractDocumentIntel(fileContents,extraContext=''){
+  const project=document.getElementById('inp-project').value||'';
+  const client=document.getElementById('inp-client').value||'';
+
+  const prompt=`You are analysing client correspondence for a residential property development project marketing pitch.
+Context: Projx Australia is a project marketing and sales agency pitching for a project marketing mandate from a property developer.
+Project: ${project||'Unknown'}
+Client/Developer: ${client||'Unknown'}
+${extraContext||''}
+
+Documents provided:
+${fileContents||'No documents uploaded — use context notes above.'}
+
+Extract ONLY information that is explicitly stated or clearly implied. Do not invent anything not present.
+Return a JSON object with these exact keys:
+{
+  "projectName": "string or null",
+  "clientName": "string or null",
+  "projectType": "string or null — e.g. 'Medium density apartments', 'Townhouse estate', 'Land subdivision', 'Master-planned community'",
+  "keyChallenge": "string or null — the developer's primary stated challenge or objective",
+  "submissionDate": "string or null",
+  "budget": "string or null — marketing budget if stated",
+  "keyRequirements": ["array of up to 5 key requirements directly stated"],
+  "evaluationCriteria": ["array of evaluation/scoring criteria if stated"],
+  "clientPriorities": ["array of what the developer has explicitly said they value most in a marketing partner"],
+  "siteDetails": "string or null — location, size, target market, stage",
+  "whatIntel": "string or null — what the developer really wants to achieve with this project",
+  "howIntel": "string or null — what matters most to them in selecting a project marketing partner",
+  "whyIntel": "string or null — any stated reasons why one agency might be preferred over another",
+  "swottStrengths": "string or null — any intelligence useful for Projx's strengths vs this opportunity",
+  "swottOpportunities": "string or null — any gaps or opportunities mentioned"
+}
+Return ONLY the JSON object. No markdown, no preamble.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':sessionStorage.getItem('pjx_api_key')||'','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5-20251101',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await resp.json();
+    if(data.error) throw new Error(data.error.message);
+    const text=data.content.map(c=>c.text||'').join('');
+    return extractJSON(text);
+  }catch(e){console.error('Extract error',e);return null;}
+}
+
+// ===== RESEARCH ANY ORG VIA AI =====
+async function researchOrg(key,url,role){
+  const roleLabel=role==='client'?'a potential client/developer we are pitching to':role==='our'?'our own organisation (we are researching ourselves to understand our public positioning)':'a competitor in residential construction';
+  const prompt=`You are researching ${roleLabel} for a residential property development bid.
+Website: ${url}
+
+Using your knowledge of this company and their public positioning, provide a summary.
+CRITICAL: Only include information that is publicly known or could reasonably be found on their website. Do not fabricate.
+
+Return a JSON object:
+{
+  "companyName": "string — their actual company name",
+  "tagline": "string or null",
+  "summary": "2-3 sentence summary of what they do and how they position themselves",
+  "keyStrengths": ["up to 4 publicly stated strengths"],
+  "residentialFocus": "string — how they are positioned in residential/property",
+  "differentiators": ["up to 3 things they clearly lead with"],
+  "notes": "string — any other useful intelligence for a bid strategy context"
+}
+Return ONLY the JSON. No markdown, no preamble.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':sessionStorage.getItem('pjx_api_key')||'','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5-20251101',max_tokens:700,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await resp.json();
+    if(data.error) throw new Error(data.error.message);
+    const text=data.content.map(c=>c.text||'').join('');
+    const parsed=extractJSON(text);
+    parsed._role=role;
+    return parsed;
+  }catch(e){console.error('Org research error',e);return null;}
+}
+
+// ===== RENDER OUR ORG + CLIENT INTEL (Tab 1) =====
+function renderOrgIntel(orgCards){
+  const section=document.getElementById('org-intel-section');
+  const grid=document.getElementById('org-intel-grid');
+  section.style.display='block';
+  grid.innerHTML='';
+  orgCards.forEach(({type,data,url})=>{
+    if(!data) return;
+    const label=type==='our'?'Our organisation':'Client';
+    const icon=type==='our'?'🏢':'🎯';
+    const card=document.createElement('div');
+    card.className='comp-intel-card';
+    const strengths=(data.keyStrengths||[]).map(s=>`<li>${s}</li>`).join('');
+    card.innerHTML=`
+      <div class="comp-intel-hd" style="${type==='our'?'background:var(--charcoal)':'background:var(--upload)'}">
+        <div class="comp-intel-name">${icon} ${label}: ${data.companyName||''}</div>
+        <div class="comp-intel-url">${url}</div>
+      </div>
+      <div class="comp-intel-body">
+        <strong>Summary</strong><br>${data.summary||'N/A'}<br><br>
+        <strong>${type==='our'?'Our strengths':'Their focus'}</strong>
+        <ul style="padding-left:1.2rem;margin:4px 0">${strengths}</ul>
+        ${data.notes?`<br><strong>Bid context</strong><br>${data.notes}`:''}
+      </div>`;
+    grid.appendChild(card);
+    // If it's our org, pre-fill org-A name
+    if(type==='our'&&data.companyName){
+      const el=document.getElementById('org-A');
+      if(el&&(!el.value||el.value==='Our organisation')) el.value=data.companyName;
+      refreshNames();
+    }
   });
-  
-  const r=document.getElementById('results');
-  r.classList.add('visible');
-  r.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function reset(){
-  sel.col1=[];sel.col2=[];sel.col3=[];
-  renderCol('col1',col1Data);renderCol('col2',col2Data);renderCol('col3',col3Data);
-  document.getElementById('results').classList.remove('visible');
-  document.getElementById('btnGen').disabled=true;
-  window.scrollTo({top:0,behavior:'smooth'});
+// ===== ROBUST JSON EXTRACTOR =====
+function extractJSON(text){
+  // Strip markdown fences
+  let cleaned = text.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+  // Try direct parse first
+  try{ return JSON.parse(cleaned); }catch(e){}
+  // Try to find first { ... } block
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if(start !== -1 && end !== -1 && end > start){
+    try{ return JSON.parse(cleaned.slice(start, end+1)); }catch(e){}
+  }
+  throw new Error('Could not parse JSON from response');
 }
 
-renderCol('col1',col1Data);
-renderCol('col2',col2Data);
-renderCol('col3',col3Data);
+// ===== COMPETITOR RESEARCH (Tab 2 — Competitor Analysis) =====
+async function runCompetitorResearch(){
+  const btn=document.getElementById('comp-research-btn');
+  const loading=document.getElementById('comp-research-loading');
+  const compUrls={B:document.getElementById('comp-url-B').value.trim(),C:document.getElementById('comp-url-C').value.trim(),D:document.getElementById('comp-url-D').value.trim()};
+  const compKeys=Object.keys(compUrls).filter(k=>compUrls[k]);
+  if(!compKeys.length){alert('Please enter at least one competitor URL above.');return;}
+
+  btn.disabled=true;
+  btn.innerHTML='<div class="spinner" style="width:12px;height:12px;border-color:rgba(255,255,255,0.3);border-top-color:#fff"></div> Researching...';
+  loading.style.display='flex';
+
+  const results=await Promise.allSettled(compKeys.map(k=>researchCompetitor(k,compUrls[k])));
+  let anySuccess=false;
+  compKeys.forEach((k,idx)=>{
+    const r=results[idx];
+    if(r.status==='fulfilled'&&r.value){
+      competitorIntel[k]=r.value;
+      anySuccess=true;
+    } else {
+      const reason=r.reason||r.value;
+      console.warn('Competitor research failed for',k,reason);
+      // Show error on the name field
+      const nameEl=document.getElementById('org-'+k);
+      if(nameEl) nameEl.placeholder='Research failed — enter name manually';
+    }
+  });
+
+  if(anySuccess) renderCompetitorIntel();
+  else {
+    const section=document.getElementById('comp-intel-section');
+    section.style.display='block';
+    document.getElementById('comp-intel-grid').innerHTML=
+      '<div style="padding:1rem;background:#FFF0F0;border:1px solid #E88;border-radius:8px;font-family:system-ui,sans-serif;font-size:12.5px;color:#800">' +
+      '<strong>Research failed.</strong> The AI could not return valid data for these URLs. ' +
+      'Check that the URLs are correct and publicly accessible, then try again. ' +
+      'You can also fill in the SWOT grid manually below.</div>';
+  }
+
+  loading.style.display='none';
+  btn.disabled=false;
+  btn.innerHTML=anySuccess?'<span>✓</span> Research complete':'<span>↺</span> Retry research';
+}
+
+// ===== COMPETITOR RESEARCH VIA AI — SWOT specific =====
+async function researchCompetitor(org,url){
+  const prompt=`You are researching a competitor project marketing agency for a residential development pitch in South East Queensland, Australia.
+Competitor website: ${url}
+
+Using your knowledge of this company and their public positioning, provide a detailed competitive intelligence summary structured specifically for a SWOT analysis. Only include what is publicly known or reasonably inferable. Do not fabricate specifics.
+
+Return a JSON object with exactly this structure:
+{
+  "companyName": "their actual company name as a string",
+  "tagline": "their apparent positioning tagline or null",
+  "residentialFocus": "how they position themselves in residential project marketing",
+  "swot": {
+    "strengths": ["strength 1","strength 2","strength 3"],
+    "weaknesses": ["weakness 1","weakness 2","weakness 3"],
+    "opportunities": ["opportunity 1","opportunity 2"],
+    "threats": ["threat 1","threat 2"]
+  },
+  "winningAngles": ["angle 1","angle 2","angle 3"],
+  "likelyPitchStyle": "how this agency typically presents in a pitch"
+}
+Return ONLY valid JSON. No markdown code fences, no preamble, no explanation.`;
+
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':sessionStorage.getItem('pjx_api_key')||'','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-5-20251101',max_tokens:900,messages:[{role:'user',content:prompt}]})
+  });
+  if(!resp.ok) throw new Error('API request failed: '+resp.status);
+  const data=await resp.json();
+  if(data.error) throw new Error(data.error.message||'API error');
+  const text=data.content.map(c=>c.text||'').join('');
+  return extractJSON(text);
+}
+
+// ===== RENDER COMPETITOR INTEL (Tab 2) — with SWOT breakdown + user input prompts =====
+function renderCompetitorIntel(){
+  const section=document.getElementById('comp-intel-section');
+  const grid=document.getElementById('comp-intel-grid');
+  section.style.display='block';
+  grid.innerHTML='';
+
+  Object.entries(competitorIntel).forEach(([org,data])=>{
+    if(!data) return;
+    const nameEl=document.getElementById('org-'+org);
+    if(nameEl&&data.companyName){nameEl.value=data.companyName;refreshNames();}
+
+    // Auto-fill SWOT grid cells where empty
+    const swot=data.swot||{};
+    const fillCell=(quadrant,text)=>{
+      const el=document.getElementById('sq-'+quadrant+'-'+org);
+      if(el&&!el.value&&text){el.value=text;el.classList.add('ai-filled');}
+    };
+    if(swot.strengths) fillCell('s',swot.strengths.join('\n'));
+    if(swot.weaknesses) fillCell('w',swot.weaknesses.join('\n'));
+    if(swot.opportunities) fillCell('o',swot.opportunities.join('\n'));
+    if(swot.threats) fillCell('t',swot.threats.join('\n'));
+
+    const card=document.createElement('div');
+    card.className='comp-intel-card';
+
+    const swotRows=['strengths','weaknesses','opportunities','threats'].map(q=>{
+      const items=(swot[q]||[]).map(i=>`<li>${i}</li>`).join('');
+      const label=q.charAt(0).toUpperCase()+q.slice(1);
+      const icon=q==='strengths'?'💪':q==='weaknesses'?'⚠️':q==='opportunities'?'🎯':'🚨';
+      return `<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--charcoal);margin-bottom:3px">${icon} ${label}</div><ul style="padding-left:1.1rem;font-size:11.5px;color:var(--text)">${items}</ul></div>`;
+    }).join('');
+
+    const winAngles=(data.winningAngles||[]).map(i=>`<li>${i}</li>`).join('');
+
+    card.innerHTML=`
+      <div class="comp-intel-hd">
+        <div class="comp-intel-name">${data.companyName||'Competitor'}</div>
+        <div class="comp-intel-url">${document.getElementById('comp-url-'+org).value}</div>
+      </div>
+      <div class="comp-intel-body">
+        <div style="font-size:10.5px;color:var(--muted);font-style:italic;margin-bottom:10px;line-height:1.5">${data.likelyPitchStyle||''}</div>
+        ${swotRows}
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--how);margin-bottom:4px">⚡ Win angles against them</div>
+          <ul style="padding-left:1.1rem;font-size:11.5px;color:var(--text)">${winAngles}</ul>
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:#FFFBF0;border:1px solid #E8D88A;border-radius:6px;font-size:11px;color:#6B5800;font-family:system-ui,sans-serif">
+          <strong>✏️ Add your own intel:</strong> Fill in the ${data.companyName||'competitor'} columns in the analysis grid below — add what you know from experience going against them in market, or what you've heard through your network.
+        </div>
+      </div>`;
+    grid.appendChild(card);
+
+    const note=document.getElementById('comp-note-'+org);
+    if(note){note.textContent='Researched: '+(data.companyName||'');note.style.display='block';}
+  });
+}
+function renderExtractedIntel(intel){
+  const panel=document.getElementById('ai-panel');
+  const body=document.getElementById('ai-extract-body');
+  panel.classList.add('show');
+
+  const cards=[
+    {title:'Project & Client',content:`<b>Project:</b> ${intel.projectName||'Not found'}<br><b>Client:</b> ${intel.clientName||'Not found'}<br><b>Type:</b> ${intel.projectType||'Not stated'}<br><b>Site:</b> ${intel.siteDetails||'Not stated'}`},
+    {title:'Key Challenge',content:intel.keyChallenge||'Not explicitly stated in documents'},
+    {title:'Client Priorities',content:intel.clientPriorities&&intel.clientPriorities.length?'<ul>'+intel.clientPriorities.map(p=>`<li>${p}</li>`).join('')+'</ul>':'Not explicitly stated'},
+    {title:'Evaluation Criteria',content:intel.evaluationCriteria&&intel.evaluationCriteria.length?'<ul>'+intel.evaluationCriteria.map(p=>`<li>${p}</li>`).join('')+'</ul>':'Not stated in documents'}
+  ];
+
+  body.innerHTML=cards.map(c=>`
+    <div class="ai-extract-card">
+      <div class="ai-extract-title">${c.title}</div>
+      <div class="ai-extract-body">${c.content}</div>
+    </div>`).join('');
+}
+
+// ===== AUTO FILL FORM FIELDS =====
+function applyAutoFill(intel){
+  if(!intel) return;
+  if(intel.projectName&&!document.getElementById('inp-project').value){
+    document.getElementById('inp-project').value=intel.projectName;
+  }
+  if(intel.clientName&&!document.getElementById('inp-client').value){
+    document.getElementById('inp-client').value=intel.clientName;
+  }
+  // Auto-fill SWOTT strengths if found
+  if(intel.swottStrengths){
+    const el=document.getElementById('sq-s-A');
+    if(el&&!el.value){el.value=intel.swottStrengths;el.classList.add('ai-filled');}
+  }
+  if(intel.swottOpportunities){
+    const el=document.getElementById('sq-o-A');
+    if(el&&!el.value){el.value=intel.swottOpportunities;el.classList.add('ai-filled');}
+  }
+  // Auto-fill project intelligence free-text fields
+  if(intel.whatIntel){
+    const el=document.getElementById('fp-what');
+    if(el&&!el.value){el.value=intel.whatIntel;el.classList.add('ai-filled');}
+  }
+  if(intel.howIntel){
+    const el=document.getElementById('fp-how');
+    if(el&&!el.value){el.value=intel.howIntel;el.classList.add('ai-filled');}
+  }
+  if(intel.whyIntel){
+    const el=document.getElementById('fp-why');
+    if(el&&!el.value){el.value=intel.whyIntel;el.classList.add('ai-filled');}
+  }
+}
+
+// ===== ORG NAMES =====
+function getOrgName(o){const el=document.getElementById('org-'+o);return(el&&el.value.trim())?el.value.trim():ORG_DEF[o];}
+function refreshNames(){
+  ORGS.forEach(o=>{
+    const name=getOrgName(o);
+    document.querySelectorAll('.cname-'+o).forEach(el=>el.textContent=name);
+  });
+}
+
+// ===== BUILD SWOTT =====
+function buildSwott(){
+  const grid=document.getElementById('sw-grid');
+  SW_DEFS.forEach(s=>{
+    const card=document.createElement('div');
+    card.className='sw-card'+(s.full?' sw-full':'');
+    const cols=ORGS.map(o=>`
+      <div class="sw-col">
+        <div class="sw-col-hd">
+          <div class="cpill ${CP_CLS[o]}">${o}</div>
+          <span class="sw-col-name cname-${o}">${getOrgName(o)}</span>
+        </div>
+        <textarea class="sw-ta" id="sq-${s.id}-${o}" placeholder="Notes for ${getOrgName(o)}…"></textarea>
+      </div>`).join('');
+    card.innerHTML=`
+      <div class="sw-hd ${s.hcls}">
+        <div class="sw-icon ${s.icls}">${s.icon}</div>
+        <div>
+          <div class="sw-title ${s.tcls}">${s.title}</div>
+          <div class="sw-desc">${s.desc}</div>
+        </div>
+      </div>
+      <div class="sw-cols">${cols}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function resetSwott(){
+  if(!confirm('Reset all SWOTT entries?'))return;
+  document.querySelectorAll('.sw-ta').forEach(t=>t.value='');
+  ORGS.forEach(o=>{const el=document.getElementById('org-'+o);if(el)el.value=o==='A'?'Our organisation':'';});
+  refreshNames();
+}
+
+// ===== BUILD PILLARS =====
+function buildPillars(){
+  const container=document.getElementById('pillars');
+  const PD=[
+    {
+      id:'what', cls:'p-what', tag:'WHAT', title:'What the developer wants',
+      q:'What is this developer REALLY trying to achieve with this project?',
+      opts:WHAT_OPTS,
+      whyLabel:'WHY are all of these things important to this developer?',
+      whyPh:'e.g. Missed pre-sales on last project, financier is nervous. Speed to contract is everything — their whole business plan depends on it.',
+      fpl:'What does success actually look like for them?',
+      fpid:'fp-what', required:true
+    },
+    {
+      id:'how', cls:'p-how', tag:'HOW', title:'How they will choose us',
+      q:'What matters MOST to this developer when selecting a project marketing partner?',
+      opts:HOW_OPTS,
+      whyLabel:'WHY are these the things that matter most to them right now?',
+      whyPh:'e.g. Got burned by a large agency that handed off to juniors. Senior involvement is non-negotiable — they need to know who is actually running the account.',
+      fpl:'What does the ideal marketing partner look like to them in practice?',
+      fpid:'fp-how', required:true
+    },
+    {
+      id:'why', cls:'p-why', tag:'WHY', title:'Our competitive advantage',
+      q:'What specific ADVANTAGE does Projx have over competing agencies for this project?',
+      opts:WHY_OPTS,
+      whyLabel:'WHY do these advantages matter specifically for this project and this developer?',
+      whyPh:'e.g. We sold 40 lots in Moreton Bay in 12 months. No other agency in this corridor can match that — and this developer knows the market.',
+      fpl:'Any supporting context, evidence or nuance that sharpens this advantage?',
+      fpid:'fp-why', required:true
+    }
+  ];
+
+  PD.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='pillar '+p.cls;
+
+    // 3 ranked dropdowns — no individual WHY prompts
+    const sels=[0,1,2].map(i=>{
+      const rankLabel=i===0?'#1 — Most important':i===1?'#2 — Second priority':'#3 — Third priority (optional)';
+      const optsHtml=`<option value="">${rankLabel}...</option>`+p.opts.map(o=>{
+        const isUnk=o.startsWith('—');
+        return `<option value="${isUnk?'unknown':o}" ${isUnk?'style="color:#B05020;font-weight:600"':''}>${o}</option>`;
+      }).join('');
+      return `<div class="rank-item">
+        <div class="rank-badge ${i===0?'':'inactive'}" id="rbadge-${p.id}-${i}">${i+1}</div>
+        <div class="rank-sel-wrap">
+          <select class="p-sel" id="psel-${p.id}-${i}" onchange="handleSel('${p.id}',${i},this)">${optsHtml}</select>
+          <span class="arr">▾</span>
+          <input class="manual-inp" id="manual-${p.id}-${i}" type="text" placeholder="Type your own answer here...">
+          <div class="unk-alert" id="unk-${p.id}-${i}">Go back to the developer and get the answer to this before proceeding.</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // 4th manual answer — always visible, no individual WHY prompt
+    const manualRow=`<div class="rank-item" style="margin-top:2px">
+      <div class="rank-badge inactive" style="font-size:8px">4</div>
+      <div class="rank-sel-wrap">
+        <div style="font-size:10px;color:var(--muted);font-family:system-ui,sans-serif;margin-bottom:4px;font-style:italic">None of the above? Add your own answer:</div>
+        <input class="manual-inp show" id="manual-${p.id}-3" type="text" placeholder="Type a custom answer not covered in the list above...">
+      </div>
+    </div>`;
+
+    // Single consolidated WHY block at the bottom of the pillar
+    const whyBlock=`<div class="pillar-why-block" id="pillar-why-${p.id}">
+      <div class="pillar-why-label">💡 ${p.whyLabel}</div>
+      <textarea class="why-ta" id="whyta-${p.id}-all" placeholder="${p.whyPh}"></textarea>
+    </div>`;
+
+    div.innerHTML=`
+      <div class="p-hd">
+        <div class="p-tag">${p.tag} <span style="color:rgba(255,150,150,0.9)">*required</span></div>
+        <div class="p-title">${p.title}</div>
+        <div class="p-q">${p.q}</div>
+        <div class="rank-note">📊 Rank from most → least important.</div>
+      </div>
+      <div class="p-body">
+        ${sels}
+        ${manualRow}
+        ${whyBlock}
+        <div class="p-fp">
+          <div class="p-fp-label">${p.fpl}</div>
+          <textarea class="p-ta" id="${p.fpid}" placeholder="Add broader context here…"></textarea>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function handleSel(p,i,sel){
+  const a=document.getElementById('unk-'+p+'-'+i);
+  const m=document.getElementById('manual-'+p+'-'+i);
+  const badge=document.getElementById('rbadge-'+p+'-'+i);
+
+  if(sel.value==='unknown'){
+    sel.classList.add('unk');
+    if(a) a.classList.add('show');
+    if(m) m.classList.remove('show');
+  } else if(sel.value==='manual'){
+    sel.classList.remove('unk');
+    if(a) a.classList.remove('show');
+    if(m) m.classList.add('show');
+  } else {
+    sel.classList.remove('unk');
+    if(a) a.classList.remove('show');
+    if(m) m.classList.remove('show');
+  }
+
+  if(sel.value&&sel.value!=='unknown') badge.classList.remove('inactive');
+  else badge.classList.add('inactive');
+
+  if(i<2&&sel.value&&sel.value!=='unknown'){
+    const nextBadge=document.getElementById('rbadge-'+p+'-'+(i+1));
+    if(nextBadge) nextBadge.classList.remove('inactive');
+  }
+}
+
+function resetIntelligence(){
+  if(!confirm('Reset all project intelligence answers?'))return;
+  ['what','how','why'].forEach(p=>{
+    [0,1,2].forEach(i=>{
+      const s=document.getElementById('psel-'+p+'-'+i);if(s){s.selectedIndex=0;s.classList.remove('unk');}
+      const a=document.getElementById('unk-'+p+'-'+i);if(a)a.classList.remove('show');
+      const m=document.getElementById('manual-'+p+'-'+i);if(m){m.classList.remove('show');m.value='';}
+      const b=document.getElementById('rbadge-'+p+'-'+i);if(b)b.classList.add('inactive');
+    });
+    const m4=document.getElementById('manual-'+p+'-3');if(m4)m4.value='';
+    const whyAll=document.getElementById('whyta-'+p+'-all');if(whyAll)whyAll.value='';
+    const fp=document.getElementById('fp-'+p);if(fp)fp.value='';
+  });
+  clearStrategy();
+}
+
+// ===== COLLECT INTEL DATA =====
+function collectIntelData(){
+  const data={};
+  ['what','how','why'].forEach(p=>{
+    data[p]={selections:[],whyReason:'',freeText:''};
+    // 3 ranked dropdowns
+    [0,1,2].forEach(i=>{
+      const s=document.getElementById('psel-'+p+'-'+i);
+      const m=document.getElementById('manual-'+p+'-'+i);
+      let val=s?s.value:'';
+      if(val==='manual'&&m) val=m.value.trim()||'';
+      if(val&&val!=='unknown') data[p].selections.push(val);
+    });
+    // 4th manual answer
+    const m4=document.getElementById('manual-'+p+'-3');
+    if(m4&&m4.value.trim()) data[p].selections.push(m4.value.trim());
+    // Single consolidated WHY field
+    const whyAll=document.getElementById('whyta-'+p+'-all');
+    data[p].whyReason=whyAll?whyAll.value.trim():'';
+    // Free text context
+    const fp=document.getElementById('fp-'+p);
+    data[p].freeText=fp?fp.value.trim():'';
+  });
+  return data;
+}
+
+// ===== VALIDATE MANDATORY FIELDS =====
+function validateMandatory(){
+  const intel=collectIntelData();
+  const missing=[];
+  if(!intel.what.selections.length&&!intel.what.freeText) missing.push('Step 3 WHAT: At least one answer about what the developer wants');
+  if(!intel.how.selections.length&&!intel.how.freeText) missing.push('Step 3 HOW: At least one answer about what matters most to the developer');
+  if(!intel.why.selections.length&&!intel.why.freeText) missing.push('Step 3 WHY: At least one answer about your competitive advantage');
+  const project=document.getElementById('inp-project').value.trim();
+  const client=document.getElementById('inp-client').value.trim();
+  if(!project) missing.push('Project name (top bar)');
+  if(!client) missing.push('Client / developer name (top bar)');
+  // Require at least one competitor URL
+  const hasComp=['B','C','D'].some(o=>{const el=document.getElementById('comp-url-'+o);return el&&el.value.trim();});
+  if(!hasComp) missing.push('Step 2: At least one competitor website URL must be entered and researched');
+  // Require key message selections
+  const kq1=document.getElementById('kq1').value;
+  const kq2=document.getElementById('kq2').value;
+  if(!kq1||!kq2) missing.push('Step 4: Both key message questions must be answered');
+  return missing;
+}
+
+// ===== GENERATE STRATEGY =====
+async function generateStrategy(){
+  const missing=validateMandatory();
+  const checkEl=document.getElementById('mandatory-check');
+
+  if(missing.length){
+    checkEl.classList.add('show');
+    checkEl.innerHTML='<strong>Please complete these required fields before generating:</strong><ul>'+missing.map(m=>`<li>${m}</li>`).join('')+'</ul>';
+    return;
+  }
+  checkEl.classList.remove('show');
+
+  const btn=document.getElementById('gen-btn');
+  const loading=document.getElementById('gen-loading');
+  btn.disabled=true;btn.innerHTML='<div class="spinner" style="width:14px;height:14px;border-color:rgba(255,255,255,0.3);border-top-color:#fff"></div> Generating...';
+  loading.style.display='flex';
+  document.getElementById('strat-output').classList.remove('show');
+
+  const intel=collectIntelData();
+  const project=document.getElementById('inp-project').value;
+  const client=document.getElementById('inp-client').value;
+  const orgName=document.getElementById('org-A').value||'Our organisation';
+
+  // Collect SWOTT notes
+  const swottNotes={};
+  ['s','w','o','t'].forEach(s=>{
+    swottNotes[s]=ORGS.map(o=>{
+      const el=document.getElementById('sq-'+s+'-'+o);
+      return el&&el.value?getOrgName(o)+': '+el.value:'';
+    }).filter(Boolean).join(' | ');
+  });
+
+  // Collect competitor intel summary — now includes SWOT data
+  const compSummary=Object.entries(competitorIntel).map(([org,d])=>{
+    if(!d) return '';
+    const swot=d.swot||{};
+    return `${d.companyName}: Positioning — ${d.residentialFocus||'N/A'}. Strengths — ${(swot.strengths||[]).join(', ')||'N/A'}. Weaknesses — ${(swot.weaknesses||[]).join(', ')||'N/A'}. Win angles — ${(d.winningAngles||[]).join(', ')||'N/A'}. Likely pitch style — ${d.likelyPitchStyle||'N/A'}.`;
+  }).filter(Boolean).join('\n');
+
+  const docSummary=extractedIntel?`
+Client challenge: ${extractedIntel.keyChallenge||'Not stated'}
+Key requirements: ${(extractedIntel.keyRequirements||[]).join(', ')||'Not stated'}
+Evaluation criteria: ${(extractedIntel.evaluationCriteria||[]).join(', ')||'Not stated'}
+Client priorities: ${(extractedIntel.clientPriorities||[]).join(', ')||'Not stated'}
+Budget: ${extractedIntel.budget||'Not stated'}
+`:'No documents uploaded.';
+
+  const q1val=document.getElementById('kq1').value;
+  const q2val=document.getElementById('kq2').value;
+  const pitchTheme=getTheme(q1val,q2val);
+  const pitchThemeName=pitchTheme?pitchTheme.name:'';
+  const pitchThemeDesc=pitchTheme?pitchTheme.desc:'';
+
+  const prompt=`You are a senior pitch strategist at a leading Australian residential project marketing agency. Generate a Strategy to Win for Projx Australia pitching for a project marketing mandate.
+
+PROJECT: ${project}
+CLIENT: ${client}
+OUR AGENCY: ${orgName}
+PITCH THEME NAME: ${pitchThemeName}
+PITCH THEME DIRECTION: ${pitchThemeDesc}
+
+WHAT THE DEVELOPER WANTS (ranked most to least important):
+${intel.what.selections.map((s,i)=>`${i+1}. ${s}`).join('\n')||'None selected'}
+WHY these matter: ${intel.what.whyReason||'Not provided'}
+Additional context: ${intel.what.freeText||'None'}
+
+WHAT MATTERS MOST IN SELECTING A MARKETING PARTNER (ranked):
+${intel.how.selections.map((s,i)=>`${i+1}. ${s}`).join('\n')||'None selected'}
+WHY these are their criteria: ${intel.how.whyReason||'Not provided'}
+Additional context: ${intel.how.freeText||'None'}
+
+OUR COMPETITIVE ADVANTAGES (ranked):
+${intel.why.selections.map((s,i)=>`${i+1}. ${s}`).join('\n')||'None selected'}
+WHY these matter for this project: ${intel.why.whyReason||'Not provided'}
+Additional context: ${intel.why.freeText||'None'}
+
+DOCUMENT INTELLIGENCE:
+${docSummary}
+
+COMPETITOR ANALYSIS NOTES:
+${swottNotes.s?'Strengths: '+swottNotes.s:''}
+${swottNotes.w?'Weaknesses: '+swottNotes.w:''}
+${swottNotes.o?'Opportunities: '+swottNotes.o:''}
+${swottNotes.t?'Threats: '+swottNotes.t:''}
+
+COMPETITOR INTELLIGENCE:
+${compSummary||'No competitor research conducted'}
+
+INSTRUCTIONS:
+- Be specific, bold, commercially sharp. Project marketing pitch — not construction.
+- Reference the pitch theme throughout.
+- No generic language. Every sentence must be specific to this project and developer.
+- All string values must use straight double quotes only — no smart quotes, no apostrophes in values.
+- Return ONLY a valid JSON object. No markdown fences, no preamble, no explanation.
+
+Required JSON structure (fill every field with real content — do not leave placeholder text):
+{
+  "pitchTheme": "theme name here",
+  "positioningStatement": "3-4 sentence paragraph on how Projx is positioned vs competition",
+  "competitorPrediction": "2-3 sentences predicting how competing agencies will pitch",
+  "what": {
+    "headline": "short bold headline max 8 words",
+    "strategy": "3-4 sentences on the specific marketing solution and go-to-market approach",
+    "outcomes": "2-3 sentences on specific measurable outcomes expected",
+    "caseStudyPrompt": "1-2 sentences on what comparable project to reference"
+  },
+  "how": {
+    "headline": "short bold headline max 8 words",
+    "onMarketStrategy": "2-3 sentences on digital channels, launch event, portals, PR",
+    "offMarketStrategy": "2-3 sentences on database, agent network, VIP pipeline strategy",
+    "reportingApproach": "1-2 sentences on reporting and communication approach"
+  },
+  "why": {
+    "headline": "short bold headline max 8 words",
+    "differentiation": "2-3 sentences on core differentiation vs competitors",
+    "caseStudyTypes": ["case study type 1", "case study type 2", "case study type 3"],
+    "dataToInclude": ["data point 1", "data point 2", "data point 3", "data point 4"]
+  },
+  "pricing": {
+    "context": "2 sentences on QLD project marketing fee structures",
+    "retainerRange": "indicative monthly retainer e.g. $5,000 to $8,000 per month",
+    "commissionStructure": "typical commission rate e.g. 2.5% on unconditional contracts",
+    "marketingBudget": "indicative campaign budget range",
+    "note": "one sentence pricing caveat"
+  },
+  "taglines": ["tagline option 1", "tagline option 2", "tagline option 3"]
+}`;
+
+  let rawResponse='';
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':sessionStorage.getItem('pjx_api_key')||'','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5-20251101',max_tokens:2500,messages:[{role:'user',content:prompt}]})
+    });
+    if(!resp.ok) throw new Error('API request failed: HTTP '+resp.status);
+    const data=await resp.json();
+    if(data.error) throw new Error(data.error.message||JSON.stringify(data.error));
+    rawResponse=data.content.map(c=>c.text||'').join('');
+    generatedStrategy=extractJSON(rawResponse);
+    generatedStrategy._meta={project,client,orgName,date:new Date().toLocaleDateString('en-AU'),pitchTheme:pitchThemeName};
+    renderStrategy(generatedStrategy);
+  }catch(e){
+    console.error('Strategy generation error',e);
+    console.error('Raw response was:',rawResponse);
+    checkEl.classList.add('show');
+    checkEl.innerHTML='<strong>Generation failed.</strong> '+e.message+
+      (rawResponse?'<br><br><details><summary style="cursor:pointer;font-size:11px;color:var(--muted)">Show raw response</summary>'+
+      '<pre style="font-size:10px;white-space:pre-wrap;max-height:200px;overflow:auto;margin-top:6px;padding:8px;background:#f5f5f5;border-radius:4px">'+
+      rawResponse.replace(/</g,'&lt;').substring(0,2000)+'</pre></details>':'');
+  }
+
+  loading.style.display='none';
+  btn.disabled=false;
+  btn.innerHTML='<span>⚡</span> Regenerate';
+}
+
+// ===== RENDER STRATEGY =====
+function renderStrategy(s){
+  const grid=document.getElementById('strat-output-grid');
+  grid.innerHTML='';
+
+  // Theme + Positioning block at top
+  const topBlock=document.createElement('div');
+  topBlock.className='strat-summary';
+  topBlock.style.marginBottom='1rem';
+  topBlock.innerHTML=`
+    <div style="display:flex;align-items:flex-start;gap:1.5rem;flex-wrap:wrap">
+      <div style="flex:0 0 auto">
+        <div class="strat-summary-label">Pitch Theme</div>
+        <div style="font-family:Georgia,serif;font-size:1.4rem;color:var(--brown);font-weight:400;margin-top:4px">${s.pitchTheme||s._meta?.pitchTheme||'—'}</div>
+      </div>
+      <div style="flex:1;min-width:200px;border-left:1px solid rgba(255,255,255,0.12);padding-left:1.5rem">
+        <div class="strat-summary-label">Positioning Against Competition</div>
+        <div style="color:#fff;font-size:13px;line-height:1.7;margin-top:4px">${s.positioningStatement||''}</div>
+      </div>
+    </div>`;
+  grid.appendChild(topBlock);
+
+  // Competitor prediction block
+  if(s.competitorPrediction){
+    const predBlock=document.createElement('div');
+    predBlock.style.cssText='background:#FFF8F0;border:1.5px solid #E8C090;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem';
+    predBlock.innerHTML=`<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#8B4010;margin-bottom:6px;font-family:system-ui,sans-serif">🔍 How competitors will likely pitch against you</div><div style="font-size:13px;color:#4A2800;line-height:1.65;font-family:system-ui,sans-serif">${s.competitorPrediction}</div>`;
+    grid.appendChild(predBlock);
+  }
+
+  // 3 pillar cards
+  const pillars=[
+    {
+      key:'what', cls:'so-what', tag:'1. WHAT', title:s.what?.headline||'What we will deliver',
+      rows:[
+        {label:'Campaign strategy', text:s.what?.strategy},
+        {label:'Measurable outcomes for the developer', text:s.what?.outcomes}
+      ],
+      prompt:{label:'Case study prompt — populate this', text:s.what?.caseStudyPrompt, style:'prompt'}
+    },
+    {
+      key:'how', cls:'so-how', tag:'2. HOW', title:s.how?.headline||'How we will execute',
+      rows:[
+        {label:'On-market campaign approach', text:s.how?.onMarketStrategy},
+        {label:'Off-market & database strategy', text:s.how?.offMarketStrategy}
+      ],
+      prompt:{label:'Reporting & communication', text:s.how?.reportingApproach, style:'note'}
+    },
+    {
+      key:'why', cls:'so-why', tag:'3. WHY', title:s.why?.headline||'Why Projx',
+      rows:[
+        {label:'Our differentiation', text:s.why?.differentiation}
+      ],
+      listSections:[
+        {label:'Recommended case study types to include', items:s.why?.caseStudyTypes||[]},
+        {label:'Data & proof points to populate', items:s.why?.dataToInclude||[]}
+      ]
+    }
+  ];
+
+  const pillarsWrap=document.createElement('div');
+  pillarsWrap.className='strat-output-grid';
+  pillarsWrap.style.marginBottom='1rem';
+  pillars.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='so-card '+p.cls;
+    const rowsHtml=p.rows.map(r=>r.text?`<div class="so-section"><div class="so-label">${r.label}</div><div class="so-text">${r.text}</div></div>`:'').join('');
+    const listHtml=(p.listSections||[]).map(ls=>ls.items.length?`<div class="so-section"><div class="so-label">${ls.label}</div><ul style="padding-left:1.1rem;margin-top:4px">${ls.items.map(i=>`<li style="font-size:12px;color:var(--text);line-height:1.55;margin-bottom:4px;font-family:system-ui,sans-serif">${i}</li>`).join('')}</ul></div>`:'').join('');
+    const promptHtml=p.prompt?.text?`<div class="so-int"><div class="so-int-label">${p.prompt.label}</div><div class="so-int-text">${p.prompt.text}</div></div>`:'';
+    card.innerHTML=`
+      <div class="so-hd"><div class="so-tag">${p.tag}</div><div class="so-title">${p.title}</div></div>
+      <div class="so-body">${rowsHtml}${listHtml}${promptHtml}</div>`;
+    pillarsWrap.appendChild(card);
+  });
+  grid.appendChild(pillarsWrap);
+
+  // Pricing block
+  if(s.pricing){
+    const pr=s.pricing;
+    const priceBlock=document.createElement('div');
+    priceBlock.style.cssText='background:var(--surface);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem';
+    priceBlock.innerHTML=`
+      <div style="background:var(--charcoal);padding:0.75rem 1.25rem;display:flex;align-items:center;gap:8px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);font-family:system-ui,sans-serif">💰 Indicative Pricing — Queensland Residential Project Marketing</div>
+      </div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+        <div style="background:var(--light);border-radius:8px;padding:0.85rem">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:6px;font-family:system-ui,sans-serif">Monthly Retainer</div>
+          <div style="font-size:1rem;font-weight:600;color:var(--charcoal)">${pr.retainerRange||'On application'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;font-family:system-ui,sans-serif">${pr.context||''}</div>
+        </div>
+        <div style="background:var(--light);border-radius:8px;padding:0.85rem">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:6px;font-family:system-ui,sans-serif">Commission Structure</div>
+          <div style="font-size:1rem;font-weight:600;color:var(--charcoal)">${pr.commissionStructure||'On application'}</div>
+        </div>
+        <div style="background:var(--light);border-radius:8px;padding:0.85rem">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:6px;font-family:system-ui,sans-serif">Marketing Budget</div>
+          <div style="font-size:1rem;font-weight:600;color:var(--charcoal)">${pr.marketingBudget||'On application'}</div>
+        </div>
+      </div>
+      <div style="padding:0 1.25rem 0.85rem;font-size:11px;color:var(--muted);font-style:italic;font-family:system-ui,sans-serif">⚠️ ${pr.note||'All pricing is indicative only and subject to formal proposal.'}</div>`;
+    grid.appendChild(priceBlock);
+  }
+
+  // Taglines block
+  if(s.taglines&&s.taglines.length){
+    const tagBlock=document.createElement('div');
+    tagBlock.style.cssText='background:var(--charcoal);border-radius:10px;padding:1.25rem;margin-bottom:1rem';
+    tagBlock.innerHTML=`
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:0.85rem;font-family:system-ui,sans-serif">✍️ Pitch tagline options — use one to anchor your submission & presentation</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+        ${s.taglines.map((t,i)=>`
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.85rem 1rem">
+            <div style="font-size:9px;color:rgba(255,255,255,0.4);font-family:system-ui,sans-serif;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em">Option ${i+1}</div>
+            <div style="font-size:14px;font-weight:600;color:#fff;line-height:1.4;font-family:Georgia,serif">${t}</div>
+          </div>`).join('')}
+      </div>`;
+    grid.appendChild(tagBlock);
+  }
+
+  document.getElementById('strat-output').classList.add('show');
+}
+
+function clearStrategy(){
+  document.getElementById('strat-output').classList.remove('show');
+  document.getElementById('strat-output-grid').innerHTML='';
+  generatedStrategy=null;
+  document.getElementById('gen-btn').innerHTML='<span>⚡</span> Generate Strategy';
+}
+
+// ===== DOWNLOAD STRATEGY PDF =====
+function downloadStrategyPDF(){
+  if(!generatedStrategy){alert('Please generate your strategy first.');return;}
+  const s=generatedStrategy;
+  const m=s._meta||{};
+  const pr=s.pricing||{};
+  const taglines=s.taglines||[];
+
+  const taglinesHtml=taglines.length?`
+    <div class="taglines">
+      <div class="section-label">Pitch tagline options</div>
+      <div class="taglines-grid">
+        ${taglines.map((t,i)=>`<div class="tagline-card"><div class="tagline-num">Option ${i+1}</div><div class="tagline-text">${t}</div></div>`).join('')}
+      </div>
+    </div>`:'';
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@page{size:A4 landscape;margin:0}
+body{font-family:Georgia,serif;color:#1C1B18;font-size:9pt;line-height:1.5;background:#fff;width:297mm;min-height:210mm}
+.page{width:297mm;min-height:210mm;display:flex;flex-direction:column}
+/* HEADER */
+.header{background:#363636;padding:18px 28px;display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0}
+.header-left{}
+.brand{font-size:10pt;font-weight:700;color:#A2A092;letter-spacing:0.05em;font-family:system-ui,sans-serif;margin-bottom:3px}
+.project-name{font-size:18pt;color:#fff;font-weight:400;line-height:1.2}
+.client-name{font-size:9pt;color:rgba(255,255,255,0.55);font-family:system-ui,sans-serif;margin-top:2px}
+.header-right{text-align:right}
+.theme-label{font-size:7pt;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4);font-family:system-ui,sans-serif;margin-bottom:3px}
+.theme-name{font-size:15pt;color:#908378;font-family:Georgia,serif;font-weight:400}
+.meta-row{font-size:7.5pt;color:rgba(255,255,255,0.35);font-family:system-ui,sans-serif;margin-top:4px}
+/* POSITIONING BAR */
+.positioning{background:#2C3E50;padding:10px 28px;font-size:8.5pt;color:rgba(255,255,255,0.8);line-height:1.55;font-style:italic;border-bottom:2px solid #908378;flex-shrink:0}
+.pos-label{font-size:6.5pt;text-transform:uppercase;letter-spacing:0.12em;color:#908378;font-family:system-ui,sans-serif;font-style:normal;margin-bottom:3px}
+/* PILLARS */
+.pillars{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1}
+.pillar{padding:16px 20px;border-right:1px solid #E0DDD8}
+.pillar:last-child{border-right:none}
+.p-what{border-top:4px solid #5A4A8A;background:#F4F2FB}
+.p-how{border-top:4px solid #2E6B5A;background:#EEF8F4}
+.p-why{border-top:4px solid #8A4A2A;background:#FBF4EE}
+.pillar-num{font-size:6.5pt;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;font-family:system-ui,sans-serif;margin-bottom:3px}
+.p-what .pillar-num{color:#5A4A8A}.p-how .pillar-num{color:#2E6B5A}.p-why .pillar-num{color:#8A4A2A}
+.pillar-headline{font-size:11pt;font-weight:600;color:#1C1B18;margin-bottom:10px;line-height:1.3}
+.field-label{font-size:6pt;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;margin-top:9px;font-family:system-ui,sans-serif}
+.p-what .field-label{color:#5A4A8A}.p-how .field-label{color:#2E6B5A}.p-why .field-label{color:#8A4A2A}
+.field-text{font-size:8pt;color:#2A2A2A;line-height:1.5;font-family:system-ui,sans-serif}
+.field-list{padding-left:1rem;margin-top:3px}
+.field-list li{font-size:7.5pt;color:#2A2A2A;line-height:1.45;margin-bottom:2px;font-family:system-ui,sans-serif}
+.int-box{margin-top:8px;padding:6px 8px;border:1px dashed #C0BCB6;border-radius:4px;background:rgba(255,255,255,0.55)}
+.int-label{font-size:5.5pt;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B6860;margin-bottom:2px;font-family:system-ui,sans-serif}
+.int-text{font-size:7.5pt;color:#6B6860;font-style:italic;line-height:1.4;font-family:system-ui,sans-serif}
+/* BOTTOM ROW */
+.bottom{display:grid;grid-template-columns:2fr 1fr;border-top:1px solid #E0DDD8;flex-shrink:0}
+/* TAGLINES */
+.taglines{padding:12px 20px;border-right:1px solid #E0DDD8}
+.taglines-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px}
+.tagline-card{background:#363636;border-radius:5px;padding:8px 10px}
+.tagline-num{font-size:6pt;color:rgba(255,255,255,0.4);font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px}
+.tagline-text{font-size:9pt;color:#fff;font-family:Georgia,serif;line-height:1.35;font-weight:400}
+/* PRICING */
+.pricing{padding:12px 20px;background:#F5F4F1}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.price-item{background:#fff;border-radius:5px;padding:7px 9px;border:1px solid #E0DDD8}
+.price-label{font-size:6pt;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#908378;margin-bottom:3px;font-family:system-ui,sans-serif}
+.price-val{font-size:9pt;font-weight:600;color:#363636}
+.section-label{font-size:6.5pt;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B6860;font-family:system-ui,sans-serif}
+/* FOOTER */
+.footer{background:#1C1B18;padding:6px 28px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.footer-left{font-size:6.5pt;color:rgba(255,255,255,0.35);font-family:system-ui,sans-serif}
+.footer-right{font-size:6.5pt;color:rgba(255,255,255,0.25);font-family:system-ui,sans-serif;font-style:italic}
+@media print{
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{page-break-after:avoid}
+}
+</style></head><body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <div class="brand">ProjX Australia — Strategy to Win</div>
+      <div class="project-name">${m.project||'Project'}</div>
+      <div class="client-name">${m.client||'Developer'} · Strategy to Win</div>
+    </div>
+    <div class="header-right">
+      <div class="theme-label">Pitch theme</div>
+      <div class="theme-name">${m.pitchTheme||s.pitchTheme||'—'}</div>
+      <div class="meta-row">${m.orgName||'Projx Australia'} · ${m.date||''} · Confidential</div>
+    </div>
+  </div>
+
+  <div class="positioning">
+    <div class="pos-label">Positioning against competition</div>
+    ${s.positioningStatement||''}${s.competitorPrediction?' — '+s.competitorPrediction:''}
+  </div>
+
+  <div class="pillars">
+    <div class="pillar p-what">
+      <div class="pillar-num">1. What — ${s.what?.headline||''}</div>
+      <div class="field-label">Campaign strategy</div>
+      <div class="field-text">${s.what?.strategy||''}</div>
+      <div class="field-label">Measurable outcomes</div>
+      <div class="field-text">${s.what?.outcomes||''}</div>
+      <div class="int-box"><div class="int-label">Case study prompt</div><div class="int-text">${s.what?.caseStudyPrompt||''}</div></div>
+    </div>
+    <div class="pillar p-how">
+      <div class="pillar-num">2. How — ${s.how?.headline||''}</div>
+      <div class="field-label">On-market campaign approach</div>
+      <div class="field-text">${s.how?.onMarketStrategy||''}</div>
+      <div class="field-label">Off-market & database strategy</div>
+      <div class="field-text">${s.how?.offMarketStrategy||''}</div>
+      <div class="int-box"><div class="int-label">Reporting approach</div><div class="int-text">${s.how?.reportingApproach||''}</div></div>
+    </div>
+    <div class="pillar p-why">
+      <div class="pillar-num">3. Why — ${s.why?.headline||''}</div>
+      <div class="field-label">Our differentiation</div>
+      <div class="field-text">${s.why?.differentiation||''}</div>
+      <div class="field-label">Recommended case studies</div>
+      <ul class="field-list">${(s.why?.caseStudyTypes||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+      <div class="field-label">Data & proof points to populate</div>
+      <ul class="field-list">${(s.why?.dataToInclude||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="taglines">
+      <div class="section-label">Pitch tagline options — choose one to anchor your submission</div>
+      <div class="taglines-grid">
+        ${taglines.map((t,i)=>`<div class="tagline-card"><div class="tagline-num">Option ${i+1}</div><div class="tagline-text">${t}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="pricing">
+      <div class="section-label">Indicative pricing — QLD residential project marketing</div>
+      <div class="pricing-grid">
+        <div class="price-item"><div class="price-label">Monthly retainer</div><div class="price-val">${pr.retainerRange||'On application'}</div></div>
+        <div class="price-item"><div class="price-label">Commission</div><div class="price-val">${pr.commissionStructure||'On application'}</div></div>
+        <div class="price-item" style="grid-column:1/-1"><div class="price-label">Marketing budget</div><div class="price-val">${pr.marketingBudget||'On application'}</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">ProjX Australia — Strategy to Win · ${m.project||''} · ${m.client||''} · ${m.date||''}</div>
+    <div class="footer-right">Confidential. For internal pitch preparation only. © ProjX Group Australia Pty Ltd (ACN 648 375 295).</div>
+  </div>
+</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+
+  // Use Blob URL — avoids popup blocker, works in all browsers
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const projectSlug=(m.project||'Strategy').replace(/\s+/g,'_');
+  a.download=`ProPitch_${projectSlug}_Strategy_to_Win.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+
+  // Also try to open for immediate print view
+  const win=window.open(url,'_blank');
+  if(win){
+    win.addEventListener('load',()=>{
+      setTimeout(()=>win.print(),300);
+    });
+  }
+}
+
+// ===== KEY MESSAGE =====
+function buildThemes(){
+  // Themes grid now shows all unique theme names without duplication
+  const grid=document.getElementById('themes-grid');
+  const seen=new Set();
+  Object.values(THEME_MAP).forEach(t=>{
+    if(seen.has(t.name)) return;
+    seen.add(t.name);
+    const card=document.createElement('div');
+    card.className='theme-card';card.id='tc-'+t.name.replace(/\s+/g,'-');
+    card.innerHTML=`<div class="th-name">${t.name}</div><div class="th-desc">${t.desc.substring(0,90)}...</div>`;
+    grid.appendChild(card);
+  });
+}
+
+async function updateTheme(){
+  const q1=document.getElementById('kq1').value;
+  const q2=document.getElementById('kq2').value;
+  const result=document.getElementById('theme-result');
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active'));
+
+  if(!q1||!q2){
+    result.classList.remove('revealed');
+    document.getElementById('tr-name').textContent='—';
+    document.getElementById('tr-desc').textContent='Answer both questions above to reveal your recommended pitch messaging direction.';
+    return;
+  }
+
+  const theme=getTheme(q1,q2);
+  if(theme){
+    result.classList.add('revealed');
+    document.getElementById('tr-name').textContent=theme.name;
+    document.getElementById('tr-desc').textContent=theme.desc;
+    const card=document.getElementById('tc-'+theme.name.replace(/\s+/g,'-'));
+    if(card)card.classList.add('active');
+  }
+  if(q1)document.getElementById('kq1').classList.add('chosen');
+  if(q2)document.getElementById('kq2').classList.add('chosen');
+}
+function resetKeyMessage(){
+  if(!confirm('Reset step 4 key message selections?'))return;
+  ['kq1','kq2'].forEach(id=>{const el=document.getElementById(id);el.selectedIndex=0;el.classList.remove('chosen');});
+  document.getElementById('theme-result').classList.remove('revealed');
+  document.getElementById('tr-name').textContent='—';
+  document.getElementById('tr-desc').textContent='Answer both questions above to reveal your recommended pitch messaging direction.';
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active'));
+}
+
+// ===== SAVE TOOL =====
+function downloadTool(){
+  const btn=document.getElementById('dl-btn');
+  btn.textContent='Saving…';btn.disabled=true;
+  const project=document.getElementById('inp-project').value||'Project';
+  const clone=document.documentElement.cloneNode(true);
+  ['inp-project','inp-client','inp-date'].forEach(id=>{const c=clone.querySelector('#'+id);if(c)c.setAttribute('value',document.getElementById(id).value);});
+  ORGS.forEach(o=>{const c=clone.querySelector('#org-'+o);if(c)c.setAttribute('value',document.getElementById('org-'+o).value||'');});
+  document.querySelectorAll('textarea').forEach(el=>{if(!el.id)return;const c=clone.querySelector('#'+el.id);if(c)c.textContent=el.value;});
+  ['what','how','why'].forEach(p=>{[0,1,2].forEach(i=>{const s=document.getElementById('psel-'+p+'-'+i);const cs=clone.querySelector('#psel-'+p+'-'+i);if(s&&cs)Array.from(cs.options).forEach(o=>{o.selected=(o.value===s.value);});});});
+  ['kq1','kq2'].forEach(id=>{const s=document.getElementById(id);const cs=clone.querySelector('#'+id);if(s&&cs)Array.from(cs.options).forEach(o=>{o.selected=(o.value===s.value);});});
+  clone.querySelectorAll('.tab-panel').forEach((p,i)=>{if(i===0)p.classList.add('active');else p.classList.remove('active');});
+  clone.querySelectorAll('.tab-btn').forEach((b,i)=>{if(i===0)b.classList.add('active');else b.classList.remove('active');});
+  const blob=new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`ProPitch_${project.replace(/\s+/g,'_')}_Strategy_Tool.html`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save tool';
+  btn.disabled=false;
+}
+
+// ===== INIT =====
+document.getElementById('org-A').value='Our organisation';
+buildSwott();
+buildPillars();
+buildThemes();
+</script>
+<!-- PASSWORD OVERLAY -->
+<div id="pw-overlay">
+  <div style="margin-bottom:8px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACbAAAALJCAMAAABYlmfJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA/RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LjE2NDc1MywgMjAyMS8wMi8xNS0xMTo1MjoxMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ1dWlkOjVEMjA4OTI0OTNCRkRCMTE5MTRBODU5MEQzMTUwOEM4IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjQyNUUyMzcxOEU4RTExRUI5MDlERTBDOTBBOUVBODg1IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjQyNUUyMzcwOEU4RTExRUI5MDlERTBDOTBBOUVBODg1IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIElsbHVzdHJhdG9yIDI1LjIgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozZjkyZTYzNi0zNWEyLTQyMmYtYTMwOS05MGQ5OTQzNWViNWEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6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" style="height:44px;display:block;margin:0 auto;" alt="ProjX"/></div>
+  <div class="pw-box">
+    <p>Strategy to Win Tool — ProjX Australia.<br>Enter your access password to continue.</p>
+    <input class="pw-inp" type="password" id="pw-inp" placeholder="••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">Access Tool</button>
+    <div class="pw-err" id="pw-err">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- CONFIDENTIAL FOOTER -->
+<div class="confidential-footer">
+  <strong style="color:rgba(255,255,255,0.5);letter-spacing:0.06em;text-transform:uppercase;font-size:9px">ProjX Australia — Strategy to Win Tool — Confidential &amp; Proprietary</strong><br>
+  This tool and all outputs generated within it are the confidential property of ProjX Group Australia Pty Ltd (ACN 648 375 295). Unauthorised reproduction, distribution, or disclosure to any third party is strictly prohibited. All strategy outputs are intended solely for internal pitch preparation and do not constitute a binding commercial proposal. © ProjX Group Australia Pty Ltd. All rights reserved.
+</div>
+
+<script>
+function checkPw(){
+  const v=document.getElementById('pw-inp').value;
+  const err=document.getElementById('pw-err');
+  if(v==='1999'){
+    // Show API key prompt
+    document.getElementById('pw-overlay').innerHTML=`
+      <div style="margin-bottom:8px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACbAAAALJCAMAAABYlmfJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA/RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LjE2NDc1MywgMjAyMS8wMi8xNS0xMTo1MjoxMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ1dWlkOjVEMjA4OTI0OTNCRkRCMTE5MTRBODU5MEQzMTUwOEM4IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjQyNUUyMzcxOEU4RTExRUI5MDlERTBDOTBBOUVBODg1IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjQyNUUyMzcwOEU4RTExRUI5MDlERTBDOTBBOUVBODg1IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIElsbHVzdHJhdG9yIDI1LjIgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozZjkyZTYzNi0zNWEyLTQyMmYtYTMwOS05MGQ5OTQzNWViNWEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6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" style="height:44px;display:block;margin:0 auto;" alt="ProjX"/></div>
+      <div class="pw-box">
+        <p>Enter your Anthropic API key to enable AI features.<br>Your key is stored in this browser session only.</p>
+        <input class="pw-inp" type="password" id="apikey-inp" placeholder="sk-ant-..." style="letter-spacing:0.05em;font-size:0.9rem">
+        <button class="pw-btn" onclick="checkApiKey()">Continue</button>
+        <div class="pw-err" id="apikey-err">Please enter a valid Anthropic API key (starts with sk-ant-)</div>
+      </div>`;
+    err.classList.remove('show');
+  } else {
+    err.classList.add('show');
+    document.getElementById('pw-inp').value='';
+    document.getElementById('pw-inp').focus();
+  }
+}
+function checkApiKey(){
+  const key=document.getElementById('apikey-inp').value.trim();
+  const err=document.getElementById('apikey-err');
+  if(key.startsWith('sk-ant-')&&key.length>20){
+    sessionStorage.setItem('pjx_api_key',key);
+    document.getElementById('pw-overlay').style.display='none';
+  } else {
+    err.classList.add('show');
+  }
+}
+document.getElementById('pw-inp').addEventListener('keyup',e=>{if(e.key==='Enter')checkPw();});
 </script>
 </body>
 </html>
