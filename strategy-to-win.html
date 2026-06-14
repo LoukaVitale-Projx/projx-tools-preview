@@ -1731,7 +1731,7 @@ body{font-family:Georgia,serif;color:#1C1B18;font-size:9pt;line-height:1.5;backg
   const a=document.createElement('a');
   a.href=url;
   const projectSlug=(m.project||'Strategy').replace(/\s+/g,'_');
-  a.download=`ProPitch_${projectSlug}_Strategy_to_Win.html`;
+  a.download=`ProjX_${projectSlug}_Strategy_to_Win.html`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -1809,7 +1809,7 @@ function downloadTool(){
   clone.querySelectorAll('.tab-btn').forEach((b,i)=>{if(i===0)b.classList.add('active');else b.classList.remove('active');});
   const blob=new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`ProPitch_${project.replace(/\s+/g,'_')}_Strategy_Tool.html`;
+  const a=document.createElement('a');a.href=url;a.download=`ProjX_${project.replace(/\s+/g,'_')}_Strategy_Tool.html`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save tool';
   btn.disabled=false;
