@@ -580,8 +580,8 @@
     <!-- RIGHT: radar + breakdown + actions -->
     <div class="rpt-col">
       <div class="rpt-slabel-row">Score Breakdown Radar</div>
-      <div style="height:150px;margin-bottom:10px;">
-        <canvas id="rpt-radar" style="width:100%;height:150px;"></canvas>
+      <div style="margin-bottom:10px;">
+        <img id="rpt-radar-img" src="" style="width:100%;height:150px;object-fit:contain;display:block;" alt="Radar chart"/>
       </div>
 
       <div class="rpt-divider"></div>
@@ -945,8 +945,6 @@ function rptCritRows(criteria, values) {
   }).join("");
 }
 
-let rptRadarChart = null;
-
 function exportPDF() {
   const oppName   = document.getElementById("opp-name").value.trim();
   const attrTotal = attrValues.reduce((a,b) => a+b, 0);
@@ -989,56 +987,9 @@ function exportPDF() {
   document.getElementById("rpt-attr-rows").innerHTML = rptCritRows(ATTR_CRITERIA, attrValues);
   document.getElementById("rpt-win-rows").innerHTML  = rptCritRows(WIN_CRITERIA,  winValues);
 
-  // Radar chart
-  const rptCtx = document.getElementById("rpt-radar").getContext("2d");
-  if (rptRadarChart) { rptRadarChart.destroy(); }
-  rptRadarChart = new Chart(rptCtx, {
-    type: "radar",
-    data: {
-      labels: ["Strategic\nImportance","Project\nGRV","Margin /\nProfit","Service\nOffering","Brand\nValue"],
-      datasets: [
-        {
-          label: "Attractiveness",
-          data: [...attrValues],
-          backgroundColor: "rgba(0,30,46,0.07)",
-          borderColor: "rgba(0,30,46,0.7)",
-          pointBackgroundColor: "#001E2E",
-          pointBorderColor: "#fff",
-          pointRadius: 3,
-          borderWidth: 2
-        },
-        {
-          label: "Winnability",
-          data: [...winValues],
-          backgroundColor: "rgba(45,106,143,0.08)",
-          borderColor: "rgba(45,106,143,0.7)",
-          pointBackgroundColor: "#2D6A8F",
-          pointBorderColor: "#fff",
-          pointRadius: 3,
-          borderWidth: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 0 },
-      scales: {
-        r: {
-          min: 0, max: 10,
-          ticks: { display: false, stepSize: 2 },
-          grid: { color: "rgba(0,30,46,0.07)" },
-          angleLines: { color: "rgba(0,30,46,0.07)" },
-          pointLabels: { color: "#6B8497", font: { size: 8, family: "Montserrat", weight: "600" } }
-        }
-      },
-      plugins: {
-        legend: {
-          labels: { color: "#6B8497", font: { size: 9, family: "Montserrat", weight: "600" }, boxWidth: 8, padding: 10 }
-        }
-      }
-    }
-  });
+  // Radar chart — snapshot the live canvas (already rendered with current values)
+  const liveRadarCanvas = document.getElementById("radar-canvas");
+  document.getElementById("rpt-radar-img").src = liveRadarCanvas.toDataURL("image/png");
 
   // Breakdown
   document.getElementById("rpt-breakdown").innerHTML = [
